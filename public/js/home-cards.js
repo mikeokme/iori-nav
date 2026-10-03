@@ -55,6 +55,14 @@
     function getSitesForCatalog(catalogId) {
       const allSites = window.IORI_SITES || [];
       if (!catalogId) return allSites;
+      // 父级分类（有下级）聚合整棵子树：用服务端注入的 IORI_CATALOG_SUBTREES 映射
+      // （自身 + 全部后代 id），与 SSR 过滤口径一致；叶子分类维持只查直属
+      const subtrees = window.IORI_CATALOG_SUBTREES || {};
+      const ids = subtrees[String(catalogId)];
+      if (ids && ids.length > 0) {
+        const idSet = new Set(ids.map(String));
+        return allSites.filter(site => idSet.has(String(site.catelog_id)));
+      }
       return allSites.filter(site => String(site.catelog_id) === String(catalogId));
     }
 

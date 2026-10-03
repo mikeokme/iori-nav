@@ -171,6 +171,22 @@ export async function onRequest(context) {
   };
   sortCats(rootCategories);
 
+  // 分类子树映射：每个有下级的分类 -> [自身 + 全部后代 id]，注入前端 IORI_CATALOG_SUBTREES，
+  // 供点击父级标签时聚合整棵子树展示（与 SSR 过滤口径一致）
+  const catalogSubtreeMap = {};
+  for (const c of categories) {
+    if (c.children && c.children.length > 0) {
+      const ids = [c.id];
+      const q = [...c.children];
+      while (q.length > 0) {
+        const n = q.shift();
+        ids.push(n.id);
+        q.push(...(n.children || []));
+      }
+      catalogSubtreeMap[String(c.id)] = ids;
+    }
+  }
+
   // === 4. 解析设置 ===
   const S = parseSettings(settingsResult.results || settingsResult);
 
@@ -206,18 +222,14 @@ export async function onRequest(context) {
   if (catalogExists) {
     const requestedCategory = categoryMap.get(requestedCatalogId);
     currentCatalogName = requestedCategory.catelog;
-    // 父级分类（有下级）聚合整棵子树的书签，避免显示"0 个书签"空壳；
+    // 父级分类（有下级）聚合整棵子树（含自身直属）的书签，避免显示"0 个书签"空壳；
     // 叶子分类只显示自己直属内容
-    if (requestedCategory.children && requestedCategory.children.length > 0) {
-      const queue = [...requestedCategory.children];
-      while (queue.length > 0) {
-        const c = queue.shift();
-        targetCategoryIds.push(c.id);
-        queue.push(...(c.children || []));
-      }
-      if (targetCategoryIds.length === 0) targetCategoryIds.push(requestedCategory.id);
-    } else {
-      targetCategoryIds.push(requestedCategory.id);
+    targetCategoryIds.push(requestedCategory.id);
+    const subtreeQueue = [...(requestedCategory.children || [])];
+    while (subtreeQueue.length > 0) {
+      const c = subtreeQueue.shift();
+      targetCategoryIds.push(c.id);
+      subtreeQueue.push(...(c.children || []));
     }
   }
 
@@ -542,6 +554,7 @@ export async function onRequest(context) {
   const safeSitesJson = JSON.stringify(cardHydrationState.cards).replace(/</g, '\\u003c');
   const safeCardConfigJson = JSON.stringify(cardHydrationState.config).replace(/</g, '\\u003c');
   const safeCardConfigsJson = JSON.stringify(cardHydrationState.configs).replace(/</g, '\\u003c');
+  const safeCatalogSubtreesJson = JSON.stringify(catalogSubtreeMap);
   const safeLayoutConfigJson = JSON.stringify({
     hideDesc: S.layout_hide_desc,
     hideLinks: S.layout_hide_links,
@@ -579,7 +592,8 @@ export async function onRequest(context) {
   } else {
     html = html.replace(
       mainJsMarker,
-      () => `<script>window.IORI_SITES=${safeSitesJson};window.IORI_CARD_CONFIG=${safeCardConfigJson};window.IORI_CARD_CONFIGS=${safeCardConfigsJson};window.IORI_LAYOUT_CONFIG=${safeLayoutConfigJson};</script>\n  ${mainJsMarker}`
+      () => `<script>window.IORI_SITES=${safeSitesJson};window.IORI_CATALOG_SUBTREES=${safeCatalogSubtreesJson};window.IORI_CARD_CONFIG=${safeCardConfigJson};window.IORI_CARD_CONFIGS=${safeCardConfigsJson};window.IORI_LAYOUT_CONFIG=${safeLayoutConfigJson};</script>
+  ${mainJsMarker}`
     );
   }
 
