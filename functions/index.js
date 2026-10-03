@@ -224,6 +224,20 @@ export async function onRequest(context) {
   const { headerClass, containerClass, titleColorClass, subTextColorClass, searchInputClass, searchIconClass } = themeClasses;
 
   // === 9. 生成菜单 HTML ===
+  // 一级导航不放 0 个书签的空标签：有下级分类时直接展示下级标签（递归压平空节点）
+  const siteCountByCat = new Map();
+  for (const s of allSites) {
+    siteCountByCat.set(s.catelog_id, (siteCountByCat.get(s.catelog_id) || 0) + 1);
+  }
+  const flattenZeroCats = (cats) => {
+    const out = [];
+    for (const c of cats) {
+      if ((siteCountByCat.get(c.id) || 0) > 0) { out.push(c); continue; }
+      out.push(...flattenZeroCats(c.children || []));
+    }
+    return out;
+  };
+  const effectiveRootCategories = flattenZeroCats(rootCategories);
   const allLinkActive = !catalogExists;
   const allLinkClass = allLinkActive ? 'active' : 'inactive';
   const allLinkActiveMarker = allLinkActive ? 'nav-item-active' : '';
@@ -231,7 +245,7 @@ export async function onRequest(context) {
     <div class="menu-item-wrapper relative inline-block text-left">
       <a href="?catalog=all" class="nav-btn ${allLinkClass} ${allLinkActiveMarker}">全部</a>
     </div>`;
-  const horizontalCatalogMarkup = horizontalAllLink + renderHorizontalMenu(rootCategories, currentCatalogName);
+  const horizontalCatalogMarkup = horizontalAllLink + renderHorizontalMenu(effectiveRootCategories, currentCatalogName);
   const catalogLinkMarkup = renderVerticalMenu(rootCategories, currentCatalogName, isCustomWallpaper);
 
   // === 10. 生成站点卡片 HTML ===
