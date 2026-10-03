@@ -206,7 +206,19 @@ export async function onRequest(context) {
   if (catalogExists) {
     const requestedCategory = categoryMap.get(requestedCatalogId);
     currentCatalogName = requestedCategory.catelog;
-    targetCategoryIds.push(requestedCatalogId);
+    // 父级分类（有下级）聚合整棵子树的书签，避免显示"0 个书签"空壳；
+    // 叶子分类只显示自己直属内容
+    if (requestedCategory.children && requestedCategory.children.length > 0) {
+      const queue = [...requestedCategory.children];
+      while (queue.length > 0) {
+        const c = queue.shift();
+        targetCategoryIds.push(c.id);
+        queue.push(...(c.children || []));
+      }
+      if (targetCategoryIds.length === 0) targetCategoryIds.push(requestedCategory.id);
+    } else {
+      targetCategoryIds.push(requestedCategory.id);
+    }
   }
 
   const sites = targetCategoryIds.length > 0
