@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>域名、邮箱、网络工具怎么搭：一套完整动线</title>
+  <meta name="description" content="注册→收信→验证→检测四步动线：域名看总成本、主力/临时邮箱隔离、代理一套用到稳、上线前必做 DNS 泄漏自检。">
+  <link rel="canonical" href="https://821066.xyz/blog/posts/domain-net-guide.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/tailwind.min.css">
+  <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans antialiased">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+    <nav class="mb-8 flex flex-wrap items-center justify-between gap-2 text-sm">
+      <a href="/" class="font-semibold text-gray-900 dark:text-gray-100 hover:text-blue-600 transition-colors">醉生梦死导航</a>
+      <div class="flex flex-wrap gap-4 text-gray-500 dark:text-gray-400">
+        <a href="/about.html" class="hover:text-blue-600">关于</a>
+        <a href="/privacy.html" class="hover:text-blue-600">隐私政策</a>
+        <a href="/contact.html" class="hover:text-blue-600">联系我们</a>
+        <a href="/disclaimer.html" class="hover:text-blue-600">免责声明</a>
+        <a href="/blog/" class="text-gray-900 dark:text-gray-100 font-medium">博客</a>
+      </div>
+    </nav>
+
+    <div class="leading-7 text-[15px]"><h1 class='text-2xl sm:text-3xl font-bold mb-3'>域名、邮箱、网络工具怎么搭：一套完整动线</h1>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>站内「域名与邮箱」分组 14 条 + 「网络与安全」分组 13 条，这篇把两条线合成一套完整动线：<strong>注册 → 收信 → 验证 → 检测</strong>，每步该用站内哪个站。</blockquote>
+<h2 class='mt-8 mb-3 text-xl font-bold'>第一步：注册域名，优先看「总成本」而非标价</h2>
+<p class='my-2'>「域名注册」子类 6 个入口（Spaceship、Porkbun、gname 及几个免费域名站）。选注册商时我们的排序：</p>
+<p class='my-2'>1. <strong>续费价</strong>：首年低价、续费翻倍的注册商很常见，下单前直接看续费价；</p>
+<p class='my-2'>2. <strong>WHOIS 隐私是否免费</strong>：Porkbun、Spaceship 都把隐私保护做成了默认免费，省一笔；</p>
+<p class='my-2'>3. <strong>免费域名站</strong>（frip、netlib.re 等）：适合测试、内网穿透、个人博客试水，<strong>不适合主品牌站</strong>——免费后缀信任度低、随时可能回收。</p>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>经验值：主站域名选 TLD（.com/.xyz），工具、测试、子项目用免费/低价后缀，成本差一个数量级。</blockquote>
+<h2 class='mt-8 mb-3 text-xl font-bold'>第二步：注册收信，临时邮箱分开用</h2>
+<p class='my-2'>「邮箱服务」收的是 Gmail / Outlook 两个主力日常邮箱；「临时邮箱」子类 6 个入口（linshiyouxiang.net、2925 无限邮、etempmail 等）则专用于<strong>注册不常管的站</strong>：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>主力邮箱注册核心账号，临时邮箱注册「用完即弃」的站点，<strong>泄密面直接隔离</strong>；</li>
+<li>需要教育邮箱的验证场景（etempmail、教师信箱等），只在平台明确允许的前提下使用。</li>
+</ul>
+<h2 class='mt-8 mb-3 text-xl font-bold'>第三步：代理/节点方案，固定一套别乱换</h2>
+<p class='my-2'>「VPN与代理」子类 6 个入口（wetest、vpngate、openproxylist 及几个自建方案站）。这条线我们的使用纪律：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>一套方案用到稳</strong>，来回换 IP 段对账号风控是负分；</li>
+<li>公共免费代理<strong>只用于网络层测试</strong>，不要挂账号、不做敏感操作；</li>
+<li>自建/订阅类方案注意选择可停可退的产品，避免订阅陷阱。</li>
+</ul>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>合规提示：所有网络工具请<strong>在符合所在地法律法规的前提下使用</strong>，本分组仅提供工具入口与信息，不构成任何使用建议。</blockquote>
+<h2 class='mt-8 mb-3 text-xl font-bold'>第四步：上线路必做的 DNS 泄漏检测</h2>
+<p class='my-2'>「网络检测」子类 3 个入口（browserscan、browserleaks、ipleak 的 DNS 泄漏页）。改完代理/组网方案后<strong>三步自检</strong>：</p>
+<p class='my-2'>1. DNS 泄漏测试（三个站轮换跑，结果不一致时以最严格的那个为准）；</p>
+<p class='my-2'>2. IP 与地理位置一致性核对；</p>
+<p class='my-2'>3. 浏览器指纹抽查（防账号被指纹识别关联）。</p>
+<p class='my-2'>「账号验证」子类的接码平台仅用于<strong>自有账号的多因子验证</strong>，任何代验、买卖账号类用途请自行评估合规风险。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>一句话原则</h2>
+<p class='my-2'><strong>主域名省钱不省质量，主力/临时邮箱隔离风险，代理方案一套用到稳，上线前必跑泄漏检测。</strong></p>
+<p class='my-2'>*本文 2026-10-03 更新 · 网络与账号类工具请遵守当地法律法规，内容以工具方当前政策为准*</p></div>
+    <footer class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+      <div class="flex flex-wrap gap-x-4 gap-y-1">
+        <a href="/" class="hover:text-blue-600">首页</a>
+        <a href="/about.html" class="hover:text-blue-600">关于</a>
+        <a href="/privacy.html" class="hover:text-blue-600">隐私政策</a>
+        <a href="/contact.html" class="hover:text-blue-600">联系我们</a>
+        <a href="/disclaimer.html" class="hover:text-blue-600">免责声明</a>
+        <a href="/blog/" class="hover:text-blue-600">博客</a>
+      </div>
+      <p class="mt-3">© 2026 醉生梦死导航 · 博客内容由 Hermes 自动汇总生成，摘要信息以原文链接为准</p>
+    </footer>
+  </div>
+</body>
+</html>
