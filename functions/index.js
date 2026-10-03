@@ -224,30 +224,7 @@ export async function onRequest(context) {
   const { headerClass, containerClass, titleColorClass, subTextColorClass, searchInputClass, searchIconClass } = themeClasses;
 
   // === 9. 生成菜单 HTML ===
-  // 一级导航不放 0 书签的空标签：有直属书签的分类保持原样；0 书签父级变为「组头 + 下级标签铺开」，
-  // 空组（自身与所有下级都没有书签）整组隐藏。
-  const siteCountByCat = new Map();
-  for (const s of allSites) {
-    siteCountByCat.set(s.catelog_id, (siteCountByCat.get(s.catelog_id) || 0) + 1);
-  }
-  const catHasSites = (c) => (siteCountByCat.get(c.id) || 0) > 0;
-  // BFS 收集后代分类中有直属书签的标签（保持父先子后的排序）
-  const collectSiteCats = (cats) => {
-    const out = [];
-    const queue = [...cats];
-    while (queue.length > 0) {
-      const c = queue.shift();
-      if (catHasSites(c)) { out.push(c); }
-      else { queue.push(...(c.children || [])); }
-    }
-    return out;
-  };
-  const effectiveRootCategories = [];
-  for (const c of rootCategories) {
-    if (catHasSites(c)) { effectiveRootCategories.push({ cat: c }); continue; }
-    const groupChildren = collectSiteCats(c.children || []);
-    if (groupChildren.length > 0) effectiveRootCategories.push({ cat: c, groupChildren });
-  }
+  // 原有架构：一级导航只显示父级标签（hover 出下拉）
   const allLinkActive = !catalogExists;
   const allLinkClass = allLinkActive ? 'active' : 'inactive';
   const allLinkActiveMarker = allLinkActive ? 'nav-item-active' : '';
@@ -255,7 +232,7 @@ export async function onRequest(context) {
     <div class="menu-item-wrapper relative inline-block text-left">
       <a href="?catalog=all" class="nav-btn ${allLinkClass} ${allLinkActiveMarker}">全部</a>
     </div>`;
-  const horizontalCatalogMarkup = horizontalAllLink + renderHorizontalMenu(effectiveRootCategories, currentCatalogName);
+  const horizontalCatalogMarkup = horizontalAllLink + renderHorizontalMenu(rootCategories, currentCatalogName);
   const catalogLinkMarkup = renderVerticalMenu(rootCategories, currentCatalogName, isCustomWallpaper);
 
   // === 10. 生成站点卡片 HTML ===
@@ -341,12 +318,33 @@ export async function onRequest(context) {
             </button>
             <div id="horizontalMoreDropdown" class="dropdown-menu hidden absolute mt-2 w-auto z-50"></div>
           </div>`;
+  // 子分类条：当前选中的是「父级」或「子级」标签时，铺出该组全部子标签一行
+  // （点中父级 → 显示子标签；点中子级 → 内容仍是该子级，并保留子标签行便于切换）
+  let subCatalogStripHtml = '';
+  if (catalogExists) {
+    const curCat = categoryMap.get(requestedCatalogId);
+    const stripParent = (curCat.children && curCat.children.length > 0)
+      ? curCat
+      : (curCat.parent_id && categoryMap.has(curCat.parent_id) ? categoryMap.get(curCat.parent_id) : null);
+    if (stripParent && stripParent.children && stripParent.children.length > 0) {
+      const pills = stripParent.children.map(c => {
+        const cActive = currentCatalogName === c.catelog;
+        return `<a href="?catalog=${encodeURIComponent(String(c.id))}" class="nav-btn subcatalog-pill ${cActive ? 'active nav-item-active' : 'inactive'}" data-id="${c.id}">${escapeHTML(c.catelog)}</a>`;
+      }).join('');
+      subCatalogStripHtml = `
+          <div class="subcatalog-strip">
+            <div class="flex flex-wrap justify-center items-center gap-2 px-2">${pills}</div>
+          </div>`;
+    }
+  }
+
   const horizontalCategoryNavHtml = `
       <div class="${horizontalCategoryNavShellClass}">
         <div id="horizontalCategoryNav" class="flex ${horizontalCategoryNavWrapClass} ${horizontalCategoryNavJustifyClass} items-center gap-3 ${horizontalCategoryNavOverflowClass} ${horizontalCategoryNavFlowClass} transition-all duration-300">
           ${horizontalCatalogMarkup}
           ${horizontalMoreHtml}
         </div>
+        ${subCatalogStripHtml}
       </div>`;
 
   const verticalHeaderContent = `

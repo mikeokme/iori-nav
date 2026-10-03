@@ -412,18 +412,41 @@ body:not(.app-ready) #sidebar a[href="?catalog=all"] {
 .custom-wallpaper .nav-btn.active { background-color: #2563eb; color: white; }
 .dark.custom-wallpaper .nav-btn.active { background-color: #2563eb !important; color: white !important; }
 
-/* 一级导航分组：0 书签父级变组头，下级有书签的标签铺在组内 */
-.catalog-group .catalog-group-title {
-  font-size: 0.65rem; line-height: 1rem; font-weight: 600; letter-spacing: 0.08em;
-  text-transform: uppercase; margin: 0.5rem 0.25rem 0.25rem;
-  color: rgba(255, 255, 255, 0.65);
+/* 子分类条：点中父级/子级标签时铺出的小组标签行（比一级导航略小） */
+.subcatalog-strip .nav-btn.subcatalog-pill {
+  height: auto;
+  min-height: 0;
+  min-width: 0;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
 }
-.dark .catalog-group .catalog-group-title { color: rgba(148, 163, 184, 0.75); }
-.catalog-group .catalog-group-items {
-  display: flex; flex-wrap: wrap; gap: 0.375rem;
+.subcatalog-strip .nav-btn.subcatalog-pill:hover { background-color: rgba(255, 255, 255, 0.25); }
+.subcatalog-strip .nav-btn.subcatalog-pill.active {
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
 }
-.catalog-group .catalog-group-items .nav-btn {
-  height: auto; min-height: 0; padding: 0.3rem 0.75rem; font-size: 0.78rem; min-width: 0;
+.custom-wallpaper .subcatalog-strip .nav-btn.subcatalog-pill {
+  background-color: rgba(255, 255, 255, 0.7);
+  color: #374151;
+}
+.custom-wallpaper .subcatalog-strip .nav-btn.subcatalog-pill.active {
+  background-color: #2563eb;
+  color: white;
+}
+.dark .subcatalog-strip .nav-btn.subcatalog-pill {
+  background-color: rgba(55, 65, 81, 0.5);
+  color: #d1d5db;
+}
+.dark .subcatalog-strip .nav-btn.subcatalog-pill.active {
+  background-color: rgba(59, 130, 246, 0.25);
+  color: #60a5fa;
 }
 
 
