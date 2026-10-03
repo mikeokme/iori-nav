@@ -1144,6 +1144,51 @@ body .search-engine-option.active {
   color: inherit !important;
 }
 
+/* 引擎行末尾的博客入口：与搜索引擎选项同款视觉（纯文字 + 悬停下划线），点击跳转 /blog/ */
+.search-engine-link {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.2rem 0.7rem 0.35rem !important;
+  border: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  font-size: 0.8rem !important;
+  font-weight: 400 !important;
+  line-height: 1.25rem !important;
+  color: var(--search-engine-text-color, #111827) !important;
+  text-decoration: none;
+  cursor: pointer;
+}
+.search-engine-link::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #399dff;
+  border-radius: 1px;
+  transform: translateX(-50%);
+  transition: width 0.25s ease;
+}
+.search-engine-link span {
+  color: inherit !important;
+}
+.search-engine-link:hover {
+  color: #399dff !important;
+}
+.search-engine-link:hover::after {
+  width: 45%;
+  background: rgba(57, 157, 255, 0.65);
+}
+.search-engine-link:active::after {
+  width: 60%;
+  background: #399dff;
+}
+
 /* 风格三页面：对齐 Nav-Item 的搜索、分类导航与背景层次 */
 @media (min-width: 768px) {
   body.desktop-page-style3.custom-wallpaper #fixed-background {

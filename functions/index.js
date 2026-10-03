@@ -303,13 +303,14 @@ export async function onRequest(context) {
   const statsRowPyClass = shouldRenderStatsRow ? 'my-8' : 'hidden';
   const statsRowHiddenClass = shouldRenderStatsRow ? '' : 'hidden';
 
-  // === 13. 搜索引擎选项 ===
+  // === 13. 搜索引擎选项（末尾挂博客入口） ===
   const searchEngineOptions = S.home_search_engine_enabled ? `
     <div class="flex justify-center items-center gap-3 mb-4 text-sm select-none search-engine-wrapper">
         <label class="search-engine-option active" data-engine="local"><span>站内</span></label>
         <label class="search-engine-option" data-engine="google"><span>Google</span></label>
         <label class="search-engine-option" data-engine="baidu"><span>Baidu</span></label>
         <label class="search-engine-option" data-engine="github"><span>Github</span></label>
+        <a href="/blog/" class="search-engine-link blog-entry"><span>博客</span></a>
     </div>` : '';
 
   // === 14. Header HTML ===
