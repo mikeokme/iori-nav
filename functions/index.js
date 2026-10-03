@@ -252,11 +252,9 @@ export async function onRequest(context) {
   const allLinkActive = !catalogExists;
   const allLinkClass = allLinkActive ? 'active' : 'inactive';
   const allLinkActiveMarker = allLinkActive ? 'nav-item-active' : '';
-  const horizontalAllLink = `
-    <div class="menu-item-wrapper relative inline-block text-left">
-      <a href="?catalog=all" class="nav-btn ${allLinkClass} ${allLinkActiveMarker}">全部</a>
-    </div>`;
-  const horizontalCatalogMarkup = horizontalAllLink + renderHorizontalMenu(rootCategories, currentCatalogName);
+  const horizontalAllLink = `\n    <div class="menu-item-wrapper relative inline-block text-left">\n      <a href="?catalog=all" class="nav-btn ${allLinkClass} ${allLinkActiveMarker}">全部</a>\n    </div>`;
+  const parentCatalogMarkup = renderHorizontalMenu(rootCategories, currentCatalogName);
+  const horizontalCatalogMarkup = horizontalAllLink + parentCatalogMarkup;
   const catalogLinkMarkup = renderVerticalMenu(rootCategories, currentCatalogName, isCustomWallpaper);
 
   // === 10. 生成站点卡片 HTML ===
@@ -363,12 +361,25 @@ export async function onRequest(context) {
     }
   }
 
+  // 多行模式：「全部」独立左列纵跨所有行，父级标签 7 列网格逐行对齐（框等宽、文字居中）；
+  // 单行模式：保持原 flex 行结构（含「更多」折叠逻辑依赖的 #horizontalCategoryNav）
+  const catalogNavInnerHtml = categoryFlow === 'multi_line'
+    ? `
+      <div class="catalog-nav-flex">
+        <div class="nav-all-col">${horizontalAllLink}</div>
+        <div id="horizontalCategoryNav" class="catalog-nav-grid ${horizontalCategoryNavOverflowClass} ${horizontalCategoryNavFlowClass} transition-all duration-300">
+          ${parentCatalogMarkup}
+        </div>
+      </div>`
+    : `
+      <div id="horizontalCategoryNav" class="flex ${horizontalCategoryNavWrapClass} ${horizontalCategoryNavJustifyClass} items-center gap-3 ${horizontalCategoryNavOverflowClass} ${horizontalCategoryNavFlowClass} transition-all duration-300">
+        ${horizontalCatalogMarkup}
+        ${horizontalMoreHtml}
+      </div>`;
+
   const horizontalCategoryNavHtml = `
       <div class="${horizontalCategoryNavShellClass}">
-        <div id="horizontalCategoryNav" class="flex ${horizontalCategoryNavWrapClass} ${horizontalCategoryNavJustifyClass} items-center gap-3 ${horizontalCategoryNavOverflowClass} ${horizontalCategoryNavFlowClass} transition-all duration-300">
-          ${horizontalCatalogMarkup}
-          ${horizontalMoreHtml}
-        </div>
+        ${catalogNavInnerHtml}
         ${subCatalogStripHtml}
       </div>`;
 

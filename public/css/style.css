@@ -449,6 +449,67 @@ body:not(.app-ready) #sidebar a[href="?catalog=all"] {
   color: #60a5fa;
 }
 
+/* 多行分类导航：「全部」左列纵跨整组高度，父级标签 7 列网格逐行对齐 */
+.catalog-nav-flex {
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+  width: 100%;
+}
+.nav-all-col {
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+  width: 4.5rem;
+}
+.nav-all-col .menu-item-wrapper {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+.nav-all-col .nav-btn {
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  padding: 0.75rem 0.4rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.catalog-nav-grid {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.5rem 0.65rem;
+  align-items: center;
+}
+.catalog-nav-grid .menu-item-wrapper {
+  display: flex;
+  width: 100%;
+}
+.catalog-nav-grid .nav-btn {
+  width: 100%;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  box-sizing: border-box;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 1200px) {
+  .catalog-nav-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .catalog-nav-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
 
 /* 分类行宽度：与 header max-w-5xl 一致，配合 min-width: 4em+2rem 约可单行展示 8 个分类 */
 .horizontal-category-nav-shell {
