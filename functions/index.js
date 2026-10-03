@@ -1,6 +1,6 @@
 // functions/index.js
 import { isAdminAuthenticated, getHomeCacheKey, clearHomeCacheDirty, markHomeCacheDirty, getHomeCacheDirtyValue } from './_middleware';
-import { FONT_MAP, HOME_CACHE_TTL } from './constants';
+import { FONT_MAP, HOME_CACHE_TTL, ADSENSE_SLOTS, ADSENSE_CLIENT } from './constants';
 import { escapeHTML, sanitizeUrl, normalizeSortOrder, getStyleStr, sanitizeStyleColor } from './lib/utils';
 import { getSettingsKeys, parseSettings } from './lib/settings-parser';
 import { renderHorizontalMenu, renderVerticalMenu } from './lib/menu-renderer';
@@ -612,10 +612,21 @@ export async function onRequest(context) {
   // 替换所有模板占位符（单次正则匹配 + 映射表）
   const canonicalUrl = `${url.origin}/`;
   const ogImageUrl = `${url.origin}/favicon.svg`;
+  // AdSense 手动广告位：按 ADSENSE_SLOTS 生成 <ins> 单元，每个单元后紧跟官方 push 脚本。
+  // 空数组 => 返回 ''，页面无白框无报错；有 slot => 在卡片区上方渲染展示广告位。
+  // 官方写法 (adsbygoogle = window.adsbygoogle || []).push({})：head 里的异步库还没加载完也会自动排队，不丢请求
+  const adUnitTopHtml = Array.isArray(ADSENSE_SLOTS) && ADSENSE_SLOTS.length
+    ? ADSENSE_SLOTS.map(slot => `
+      <div class="adsense-ad-unit">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="${ADSENSE_CLIENT}" data-ad-slot="${slot}" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>`).join('\n')
+    : '';
   const replacements = {
     'HEADER_CONTENT': headerContent,
     'HEADER_CLASS': headerClass,
     'CONTAINER_CLASS': containerClass,
+    'AD_UNIT_TOP': adUnitTopHtml,
     'FOOTER_CLASS': footerClass,
     'HITOKOTO_CLASS': hitokotoClass,
     'LEFT_TOP_ACTION': leftTopActionHtml,

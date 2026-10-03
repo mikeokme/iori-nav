@@ -510,6 +510,17 @@ body:not(.app-ready) #sidebar a[href="?catalog=all"] {
   .catalog-nav-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
+/* AdSense 广告单元：宽度与卡片区对齐，内容自适应撑开（无广告时不占位不报错） */
+.adsense-ad-unit {
+  max-width: 80rem;
+  margin: 1rem auto;
+  padding: 0 1rem;
+  text-align: center;
+}
+.adsense-ad-unit .adsbygoogle {
+  min-height: 0;
+}
+
 
 /* 分类行宽度：与 header max-w-5xl 一致，配合 min-width: 4em+2rem 约可单行展示 8 个分类 */
 .horizontal-category-nav-shell {

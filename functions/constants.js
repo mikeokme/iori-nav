@@ -24,10 +24,20 @@ export const SCHEMA_VERSION = 'v5';
 export const PREVIOUS_SCHEMA_VERSION = 'v4';
 
 // 首页 HTML 缓存版本 - 修改此值会强制刷新首页缓存
-export const HOME_CACHE_VERSION = 'v46';
+export const HOME_CACHE_VERSION = 'v47';
 
 // 首页 HTML 缓存与 dirty 标记 TTL（30 天）
 export const HOME_CACHE_TTL = 2592000;
+
+// AdSense 广告单元号（data-ad-slot）。
+// 在 AdSense 后台「广告 → 广告单元 → 新建广告单元」创建后，把广告单元代码里的
+// data-ad-slot 数值加进这个数组（一个元素一个单元），保存后重新部署即生效。
+// 留空 = 页面不渲染任何手动广告位（不会报错、不留白框）；
+// 若账号开启了「自动广告」，仅 head 里的 adsbygoogle.js 脚本即可自动出广告。
+export const ADSENSE_SLOTS = ['4257492470'];
+
+// AdSense 发布者 ID（与 index.html head 里 adsbygoogle.js 的 client 参数一致）
+export const ADSENSE_CLIENT = 'ca-pub-1193003332646312';
 
 // 数据库表结构定义
 export const DB_SCHEMA = `
