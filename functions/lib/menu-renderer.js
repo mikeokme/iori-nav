@@ -14,13 +14,28 @@ export function renderHorizontalMenu(cats, currentCatalogName) {
     return _renderHorizontalItems(cats, currentCatalogName, 0);
 }
 
-function _renderHorizontalItems(cats, currentCatalogName, level) {
-    return cats.map(cat => {
+function _renderHorizontalItems(items, currentCatalogName, level) {
+    return items.map(entry => {
+        // level 0 的 entry 可能带 groupChildren（index.js 计算好的分组）
+        const isEntry = level === 0 && entry && entry.cat !== undefined;
+        const cat = isEntry ? entry.cat : entry;
+        const groupChildren = isEntry ? entry.groupChildren : undefined;
+
         const isActive = currentCatalogName === cat.catelog;
         const hasChildren = cat.children && cat.children.length > 0;
         const safeName = escapeHTML(cat.catelog);
         const catalogParam = encodeURIComponent(String(cat.id));
         const linkUrl = `?catalog=${catalogParam}`;
+
+        // 0 书签父级分类：渲染为「小组头 + 下级标签铺开」，空组（无直属、下级也无）整组隐藏
+        if (groupChildren !== undefined) {
+            if (groupChildren.length === 0) return '';
+            const childPills = groupChildren.map(c => {
+                const cActive = currentCatalogName === c.catelog ? 'active nav-item-active' : 'inactive';
+                return `<a href="?catalog=${encodeURIComponent(String(c.id))}" class="nav-btn ${cActive}" data-id="${c.id}">${escapeHTML(c.catelog)}</a>`;
+            }).join('');
+            return `<div class="menu-item-wrapper catalog-group relative block w-full"><div class="catalog-group-title">${safeName}</div><div class="catalog-group-items">${childPills}</div></div>`;
+        }
 
         const isRoot = level === 0;
         const activeClass = isActive ? 'active' : (isRoot ? 'inactive' : '');
@@ -35,7 +50,7 @@ function _renderHorizontalItems(cats, currentCatalogName, level) {
         const childrenHtml = hasChildren ? `<div class="dropdown-menu">${_renderHorizontalItems(cat.children, currentCatalogName, level + 1)}</div>` : '';
 
         return `<div class="${wrapperClass}"><a href="${linkUrl}" class="${linkClass}" data-id="${cat.id}">${safeName}${arrowSvg}</a>${childrenHtml}</div>`;
-    }).join('');
+    }).filter(Boolean).join('');
 }
 
 /**

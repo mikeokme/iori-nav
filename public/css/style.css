@@ -412,6 +412,21 @@ body:not(.app-ready) #sidebar a[href="?catalog=all"] {
 .custom-wallpaper .nav-btn.active { background-color: #2563eb; color: white; }
 .dark.custom-wallpaper .nav-btn.active { background-color: #2563eb !important; color: white !important; }
 
+/* 一级导航分组：0 书签父级变组头，下级有书签的标签铺在组内 */
+.catalog-group .catalog-group-title {
+  font-size: 0.65rem; line-height: 1rem; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; margin: 0.5rem 0.25rem 0.25rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+.dark .catalog-group .catalog-group-title { color: rgba(148, 163, 184, 0.75); }
+.catalog-group .catalog-group-items {
+  display: flex; flex-wrap: wrap; gap: 0.375rem;
+}
+.catalog-group .catalog-group-items .nav-btn {
+  height: auto; min-height: 0; padding: 0.3rem 0.75rem; font-size: 0.78rem; min-width: 0;
+}
+
+
 /* 分类行宽度：与 header max-w-5xl 一致，配合 min-width: 4em+2rem 约可单行展示 8 个分类 */
 .horizontal-category-nav-shell {
   width: min(100%, 64rem); /* max-w-5xl */

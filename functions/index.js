@@ -224,20 +224,30 @@ export async function onRequest(context) {
   const { headerClass, containerClass, titleColorClass, subTextColorClass, searchInputClass, searchIconClass } = themeClasses;
 
   // === 9. 生成菜单 HTML ===
-  // 一级导航不放 0 个书签的空标签：有下级分类时直接展示下级标签（递归压平空节点）
+  // 一级导航不放 0 书签的空标签：有直属书签的分类保持原样；0 书签父级变为「组头 + 下级标签铺开」，
+  // 空组（自身与所有下级都没有书签）整组隐藏。
   const siteCountByCat = new Map();
   for (const s of allSites) {
     siteCountByCat.set(s.catelog_id, (siteCountByCat.get(s.catelog_id) || 0) + 1);
   }
-  const flattenZeroCats = (cats) => {
+  const catHasSites = (c) => (siteCountByCat.get(c.id) || 0) > 0;
+  // BFS 收集后代分类中有直属书签的标签（保持父先子后的排序）
+  const collectSiteCats = (cats) => {
     const out = [];
-    for (const c of cats) {
-      if ((siteCountByCat.get(c.id) || 0) > 0) { out.push(c); continue; }
-      out.push(...flattenZeroCats(c.children || []));
+    const queue = [...cats];
+    while (queue.length > 0) {
+      const c = queue.shift();
+      if (catHasSites(c)) { out.push(c); }
+      else { queue.push(...(c.children || [])); }
     }
     return out;
   };
-  const effectiveRootCategories = flattenZeroCats(rootCategories);
+  const effectiveRootCategories = [];
+  for (const c of rootCategories) {
+    if (catHasSites(c)) { effectiveRootCategories.push({ cat: c }); continue; }
+    const groupChildren = collectSiteCats(c.children || []);
+    if (groupChildren.length > 0) effectiveRootCategories.push({ cat: c, groupChildren });
+  }
   const allLinkActive = !catalogExists;
   const allLinkClass = allLinkActive ? 'active' : 'inactive';
   const allLinkActiveMarker = allLinkActive ? 'nav-item-active' : '';
