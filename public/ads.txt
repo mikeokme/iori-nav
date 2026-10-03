@@ -1,2 +1,2 @@
 # Google AdSense
-googlesyndication.com, pub-1193003332646312, DIRECT, f08cfeb7be62440d
+google.com, pub-1193003332646312, DIRECT, f08c47fec0942fa0
