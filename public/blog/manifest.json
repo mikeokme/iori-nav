@@ -64,6 +64,76 @@
       "summary": "汇总 6 天早报共 104 条要闻，覆盖国际局势、经济市场、前沿科技、国内热点与水利基建。",
       "date": "2026-10-18",
       "tags": "周报"
+    },
+    {
+      "slug": "account-security-checklist",
+      "title": "密码管理与两步验证：普通人也能做对的账号安全清单",
+      "summary": "不用懂技术，照着清单做完这几件事，账号被盗的概率能降一个数量级。",
+      "date": "2026-10-22",
+      "tags": "网络与安全"
+    },
+    {
+      "slug": "ai-assistants-comparison-guide",
+      "title": "ChatGPT、Claude、Gemini、DeepSeek 怎么选：按办公场景挑 AI 助手",
+      "summary": "四个主流 AI 助手不比参数，按写材料、查资料、处理表格、写代码这些真实办公场景来分工。",
+      "date": "2026-10-22",
+      "tags": "AI助手"
+    },
+    {
+      "slug": "ai-image-generation-beginner-guide",
+      "title": "AI 绘图工具入门：从写提示词到出图的完整流程",
+      "summary": "不用会画画也能出图：选工具、写提示词、控构图、改细节，AI 绘图的完整上手路线一篇走完。",
+      "date": "2026-10-22",
+      "tags": "AI创作与模型"
+    },
+    {
+      "slug": "bookmark-organization-system",
+      "title": "浏览器书签管理术：把几百个收藏整理成个人知识库",
+      "summary": "书签攒到几百个就等于没收藏，分享一套从分类、命名到定期清理的整理方法，也就是本站的由来。",
+      "date": "2026-10-22",
+      "tags": "常用工具"
+    },
+    {
+      "slug": "custom-domain-email-setup",
+      "title": "个人域名邮箱完整搭建指南：从买域名到能收发邮件",
+      "summary": "用自己的域名做邮箱，从解析记录到收发测试，一篇讲清 MX、SPF、DKIM、DMARC 怎么填。",
+      "date": "2026-10-22",
+      "tags": "域名与邮箱"
+    },
+    {
+      "slug": "free-office-tools-combo",
+      "title": "在线办公工具的免费搭配：文档、表格、笔记与网盘怎么组一套",
+      "summary": "不花钱也能组一套顺手的在线办公工具，关键是分工明确、能导出、别把资料押在一家上。",
+      "date": "2026-10-22",
+      "tags": "办公与学习"
+    },
+    {
+      "slug": "static-site-hosting-comparison",
+      "title": "静态网站托管怎么选：Cloudflare Pages、GitHub Pages、Vercel 实测对比",
+      "summary": "三家免费静态托管都长期用过，从额度、速度、部署方式到踩坑点，一次对比讲清。",
+      "date": "2026-10-22",
+      "tags": "开发与云服务"
+    },
+    {
+      "slug": "temporary-email-pros-cons",
+      "title": "临时邮箱该不该用：适用场景、风险与替代方案",
+      "summary": "临时邮箱能挡骚扰，但绝不能用来注册重要账号，说清什么场景能用、什么场景碰都别碰。",
+      "date": "2026-10-22",
+      "tags": "网络与安全"
+    },
+    {
+      "slug": "water-engineering-online-tools",
+      "title": "水利工程人必备的在线工具清单：从水文查询到规范检索",
+      "summary": "水文数据、雨情汛情、规范标准、图纸计算，水利人日常真正用得上的在线工具一次说清。",
+      "date": "2026-10-22",
+      "tags": "水利与工程"
+    },
+    {
+      "slug": "water-government-info-guide",
+      "title": "水利政务信息去哪查：部委、流域机构与地方平台的检索路线",
+      "summary": "政策文件、水资源公报、招标公告、行政许可，水利政务信息按层级查，不再大海捞针。",
+      "date": "2026-10-22",
+      "tags": "水利与工程"
     }
   ]
 }

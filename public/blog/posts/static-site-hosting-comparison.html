@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>静态网站托管怎么选：Cloudflare Pages、GitHub Pages、Vercel 实测对比 · 醉生梦死导航</title>
+<meta name="description" content="三家免费静态托管都长期用过，从额度、速度、部署方式到踩坑点，一次对比讲清。">
+<link rel="canonical" href="https://821066.xyz/blog/posts/static-site-hosting-comparison">
+</head>
+<body>
+<main>
+<article>
+<h1>静态网站托管怎么选：Cloudflare Pages、GitHub Pages、Vercel 实测对比</h1>
+<p class="meta">2026-10-22 · 开发与云服务 · 「醉生梦死导航」维护者</p>
+<p>把一个静态站（纯 HTML/CSS/JS，没有自己的服务器）挂到网上，现在最主流的免费选择就是 Cloudflare Pages、GitHub Pages 和 Vercel 三家。本站「醉生梦死导航」现在跑在 Cloudflare Pages 上，之前也用过另外两家。这篇不谈虚的，就从额度、部署、上手难度和实际访问体验几个维度说说差别，帮你一次选对，少折腾迁移。</p>
+<h2>三家是什么定位</h2>
+<p>先一句话说清各自的出身，定位决定了体验差异：</p>
+<ul>
+<li><strong>GitHub Pages</strong>：GitHub 给每个仓库附赠的静态托管，老牌、简单，代码推上去就能发布。功能最「素」，但胜在稳定、和仓库天然一体。</li>
+<li><strong>Cloudflare Pages</strong>：Cloudflare 的托管服务，背后是它家的全球 CDN。免费额度给得大方，自带 DNS、HTTPS 和各种边缘功能，适合已经把域名放在 Cloudflare 的人。</li>
+<li><strong>Vercel</strong>：前端框架 Next.js 亲爹出品，对各类框架的构建支持最顺滑，预览部署（每个分支/PR 自动生成预览链接）是它的招牌。免费 Hobby 计划定位个人非商用。</li>
+</ul>
+<h2>硬指标对比</h2>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Cloudflare Pages</th>
+<th>GitHub Pages</th>
+<th>Vercel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>免费带宽</td>
+<td>不限量</td>
+<td>每月 100GB（软性上限）</td>
+<td>100GB（Hobby 计划）</td>
+</tr>
+<tr>
+<td>站点/构建限制</td>
+<td>每月 500 次构建，单站文件数、单文件 25MB 上限</td>
+<td>仓库建议 1GB 以内，每天构建次数有限</td>
+<td>构建时长、函数调用有月度额度</td>
+</tr>
+<tr>
+<td>自定义域名 + HTTPS</td>
+<td>支持，证书自动签发</td>
+<td>支持，证书自动签发</td>
+<td>支持，证书自动签发</td>
+</tr>
+<tr>
+<td>部署方式</td>
+<td>Git 推送、Wrangler 命令行、直接上传文件</td>
+<td>Git 推送、Actions</td>
+<td>Git 推送、CLI</td>
+</tr>
+<tr>
+<td>商用</td>
+<td>免费版可商用</td>
+<td>可商用</td>
+<td>Hobby 计划仅限非商用，商用要 Pro</td>
+</tr>
+<tr>
+<td>国内访问</td>
+<td>免费版节点调度一般，速度看运气</td>
+<td>偏慢且偶有不稳定</td>
+<td>偏慢，自定义域名偶发解析问题</td>
+</tr>
+</tbody>
+</table>
+<p>表里最需要提醒的是两点：一是 <strong>Vercel 免费版明确只限非商业用途</strong>，你的站要是挂广告、接推广，就别用 Hobby 计划省这个钱；二是三家在国内的访问速度都谈不上快，这是免费全球 CDN 的通病，真正在意国内速度，还是得考虑备案加国内云厂商，那就不是一个话题了。</p>
+<h2>部署体验：谁更省心</h2>
+<ul>
+<li><strong>纯静态文件、不会构建工具</strong>：Cloudflare Pages 可以直接在网页上拖拽上传整个文件夹，零门槛；GitHub Pages 需要你至少会用 Git 把文件推到仓库。</li>
+<li><strong>用 Hugo、Astro 等静态生成器</strong>：三家都能连 Git 仓库自动构建，填好构建命令和输出目录就行。Vercel 对框架的识别最自动，基本不用配；Cloudflare Pages 有预设可选，也不难；GitHub Pages 用 Actions 自己写流程，灵活但门槛最高。</li>
+<li><strong>改一版看一版</strong>：Vercel 和 Cloudflare Pages 都有预览部署，改完先在一个临时网址上确认没问题再上线，试错成本低。GitHub Pages 没有这个机制，推上去就是正式版。</li>
+</ul>
+<h2>三家的短板，各自都在哪</h2>
+<p>免费托管没有十全十美，选之前先把短板看清楚，免得上线后才发现不对路：</p>
+<ul>
+<li><strong>GitHub Pages</strong>：只认静态文件，没有服务端、没有数据库，连个表单处理都要靠第三方；原生构建只支持 Jekyll，用其他生成器就得自己写 Actions 流程；仓库必须是公开的（付费账户才能用私有仓库），介意代码公开的人要先想清楚。</li>
+<li><strong>Cloudflare Pages</strong>：免费版每月 500 次构建对频繁改站的人基本够用，但它的构建环境、日志保留都比较基础；另外它家功能迭代快，后台界面和文档时不时变样，照着半年前的教程操作偶尔会对不上。再就是 Pages 绑定的是 Cloudflare 的生态，域名 DNS 不在它家的话，体验会打折。</li>
+<li><strong>Vercel</strong>：除了前面说的商用限制，还要注意超额计费——Hobby 计划超了额度是直接停，Pro 计划超了是按量收费，流量突然爆了的站，一不留神账单会吓人一跳。它对自家 Next.js 最友好，纯静态站用它有点大材小用。</li>
+</ul>
+<p>还有一个三家共通的提醒：都<strong>不支持直接跑后端程序</strong>。访客留言、搜索、统计这类需求，要么用它们各自的边缘函数（Cloudflare Workers、Vercel Functions，都有免费额度但要写代码），要么接第三方服务。需求一旦复杂到需要自己的服务器和数据库，就该考虑云服务器，而不是在静态托管上硬凑。</p>
+<h2>一个真实场景帮你对号入座</h2>
+<p>还是拿不准的话，对照这三个场景选：你只是做了个个人主页或文档站，文件不多、更新不频繁——GitHub Pages 足够，零配置心智负担；你像本站一样，是个会长期维护、页面不少、希望访客打开快的独立站，域名也愿意放在 Cloudflare——直接 Cloudflare Pages；你在正经开发一个前端项目，要频繁发版、给人看预览、以后可能接后端接口——Vercel 的工作流最顺。先按「现在的需求」选，别为想象中的未来提前付费或过度设计，这三家之间迁移静态站的成本其实很低，换起来就是改个部署目标的事。</p>
+<h2>我自己的选择和踩过的坑</h2>
+<p>本站最终落在 Cloudflare Pages，原因很实际：域名本来就托管在 Cloudflare，DNS、HTTPS、部署在一家后台里全办了，不用在几个平台之间跳；带宽不限量对导航站这种小文件、多请求的场景也友好。迁移过程中踩过两个坑，顺带提醒：</p>
+<ol>
+<li><strong>www 子域名要单独配。</strong> 主域名能打开不代表 <code>www.</code> 也行，要在 DNS 里给 www 加一条 CNAME 指向主域名（或建一个单独的 Pages 自定义域名），否则一部分访客会打不开。</li>
+<li><strong>文件路径大小写敏感。</strong> 本地在 Windows 上预览没问题的链接，传上去可能 404，多半是文件名大小写对不上，Linux 服务器是区分大小写的。</li>
+<li><strong>缓存别开太狠。</strong> HTML 页面如果被长缓存，更新后访客看到的还是旧版；静态资源可以长缓存，HTML 建议短缓存或不缓存。</li>
+</ol>
+<p>选型结论一句话：域名在 Cloudflare、或者想要大带宽和省心，就选 Cloudflare Pages；站就是 GitHub 仓库的附属品、图个极简，选 GitHub Pages；主力做前端开发、重度用框架和预览功能，选 Vercel（商用记得升 Pro）。</p>
+<h2>相关导航</h2>
+<ul>
+<li><a href="https://821066.xyz/blog/posts/domain-diy">域名、邮箱、网络工具怎么搭：一套完整动线</a></li>
+<li><a href="https://821066.xyz/blog/">博客首页：每周要闻与工具手记</a></li>
+<li><a href="https://821066.xyz/">站内「开发与云服务」分类收录</a></li>
+</ul>
+<p>——「醉生梦死导航」维护者</p>
+</article>
+<p><a href="https://821066.xyz/blog/">← 返回博客列表</a> · <a href="https://821066.xyz/">醉生梦死导航首页</a></p>
+</main>
+</body>
+</html>

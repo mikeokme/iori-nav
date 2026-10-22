@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人域名邮箱完整搭建指南：从买域名到能收发邮件 · 醉生梦死导航</title>
+<meta name="description" content="用自己的域名做邮箱，从解析记录到收发测试，一篇讲清 MX、SPF、DKIM、DMARC 怎么填。">
+<link rel="canonical" href="https://821066.xyz/blog/posts/custom-domain-email-setup">
+</head>
+<body>
+<main>
+<article>
+<h1>个人域名邮箱完整搭建指南：从买域名到能收发邮件</h1>
+<p class="meta">2026-10-22 · 域名与邮箱 · 「醉生梦死导航」维护者</p>
+<p>很多人买域名只想着建站，其实域名最实用的附带福利，是能拥有一个像 <code>me@你的域名</code> 这样的邮箱地址。简历上、名片上、工作沟通里，它比一串数字的免费邮箱显得正式得多，而且不绑死在某一家服务商身上——哪天想换邮箱服务商，地址不用变，改几条解析就行。我自己的域名邮箱就是这么搭的，这篇把完整流程和容易踩的坑一次讲清。</p>
+<h2>先想清楚：你要的是「转发」还是「完整邮箱」</h2>
+<p>域名本身只是一个名字，它不能直接收发邮件，必须背后挂一个服务。常见有两条路线：</p>
+<p><strong>路线一：只转发。</strong> 以 Cloudflare Email Routing 为代表，免费。它把发到你域名邮箱的邮件，自动转发到你现有的 Gmail、QQ 邮箱等真实邮箱里。优点是零成本、五分钟配好；缺点是它只有「收」的功能，不能用域名地址直接发信（回复时对方看到的是你的真实邮箱）。</p>
+<p><strong>路线二：完整邮箱服务。</strong> 把域名绑到 Zoho Mail、腾讯企业邮箱、Google Workspace、Microsoft 365 这类服务上，有独立的收件箱，能以域名地址正常收发。免费档里 Zoho 和腾讯企业邮箱对个人够用，Google 和微软是纯付费。</p>
+<p>如果你只是想有个对外地址收验证码、收询盘，路线一足够；如果要正式对外发信、谈合作，老老实实走路线二。下面以通用流程讲，两条路线在解析记录这一环是相通的。</p>
+<h2>四条关键记录：MX、SPF、DKIM、DMARC</h2>
+<p>域名邮箱能不能用、发的信会不会进对方垃圾箱，全看这四条 DNS 记录填得对不对。它们都在你的域名解析后台（域名在 Cloudflare 托管的话，就在 Cloudflare 的 DNS 页面）里添加：</p>
+<table>
+<thead>
+<tr>
+<th>记录</th>
+<th>类型</th>
+<th>作用</th>
+<th>填什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MX</td>
+<td>MX</td>
+<td>告诉全世界：这个域名的邮件该投递到哪台服务器</td>
+<td>服务商给的地址，如 Cloudflare 的是 <code>route1.mx.cloudflare.net</code> 等三条，各带优先级</td>
+</tr>
+<tr>
+<td>SPF</td>
+<td>TXT</td>
+<td>声明哪些服务器有权以你的域名发信，防冒充</td>
+<td>服务商给的串，形如 <code>v=spf1 include:xxx ~all</code>，一个域名只能有一条</td>
+</tr>
+<tr>
+<td>DKIM</td>
+<td>TXT 或 CNAME</td>
+<td>给每封发出的信加数字签名，对方据此验明正身</td>
+<td>服务商在后台生成一长串公钥，粘贴到指定主机名下</td>
+</tr>
+<tr>
+<td>DMARC</td>
+<td>TXT</td>
+<td>告诉收信方：验签失败的信怎么处理（拒收/进垃圾箱/放行）</td>
+<td>主机名 <code>_dmarc</code>，值如 <code>v=DMARC1; p=none; rua=mailto:你@域名</code></td>
+</tr>
+</tbody>
+</table>
+<p>几个实操要点：</p>
+<ul>
+<li><strong>MX 优先级别填错。</strong> 服务商给几条就填几条，数字小的优先。Cloudflare Email Routing 在开启向导里会自动帮你把三条 MX 和一条 SPF 写好，这是它最省心的地方，不用手动抄。</li>
+<li><strong>SPF 最怕有两条。</strong> 如果你同时用两家服务发信，要把两家的 <code>include:</code> 合并进同一条 SPF，而不是新增一条，两条 SPF 会导致验证直接失败。</li>
+<li><strong>DKIM 必须去服务商后台点「启用」并验证通过</strong>，光把记录贴上不算完。值很长，复制时别漏字符。</li>
+<li><strong>DMARC 先用 <code>p=none</code> 观察一两周</strong>，确认正常邮件没被误伤，再改成 <code>quarantine</code> 甚至 <code>reject</code>。一上来就 reject，配错了会把自己的信全拦下。</li>
+</ul>
+<h2>完整流程（以新域名为例）</h2>
+<ol>
+<li>在注册商处买好域名，建议把 DNS 托管到 Cloudflare，免费且生效快。</li>
+<li>选服务：只收信用 Cloudflare Email Routing（在控制台「电子邮件 → 电子邮件路由」里启用，先验证你的目标转邮箱）；要收发就注册 Zoho 或腾讯企业邮箱，按它的向导做域名验证（通常是加一条指定 TXT）。</li>
+<li>按服务商给的清单，逐条添加 MX、SPF、DKIM 记录，最后补上 DMARC。</li>
+<li>等解析生效，一般几分钟到几小时。用手机流量（别用同一网络）给自己域名邮箱发一封信测试收件。</li>
+<li>发信测试：从域名邮箱发一封到自己的 Gmail，看是否进了垃圾箱；再打开这封信的「显示原始邮件」，确认 SPF、DKIM、DMARC 三项都是 PASS。</li>
+</ol>
+<p>最后一项检测很多人不知道：有个免费网站叫 mail-tester.com，它给你一个临时地址，你发一封信过去，它会给你的发信质量打分并逐项指出问题，调记录时特别好用。分数能到 9 分以上，基本就不会被主流邮箱判垃圾了。</p>
+<h2>发出去进垃圾箱？按这个顺序排查</h2>
+<p>新搭的域名邮箱最常见的抱怨就是「信发出去了，对方说在垃圾箱里」。别慌，按下面这个顺序查，九成问题出在前两项：</p>
+<ol>
+<li><strong>三项验证有没有全 PASS。</strong> 按上一步的方法看原始邮件，只要 SPF、DKIM、DMARC 有一项不是 PASS，先把记录修对，别谈其他。</li>
+<li><strong>域名是不是太「新」。</strong> 刚注册几天的域名、刚配好的发信通道，在各大邮箱眼里都没有历史信誉，发出的前几十封信被特殊照顾很正常。用真实往来慢慢养，别一上来就群发。</li>
+<li><strong>内容像不像推销信。</strong> 满篇图片、只有一个链接、正文三五个字、标题全大写带感叹号，这些都是垃圾邮件的典型长相。先用正常的文字邮件往来一段时间。</li>
+<li><strong>发送量是否突增。</strong> 免费邮箱服务通常有每日发信上限（几百封量级），超了会被限流甚至封号。域名邮箱是用来正常通信的，不是群发工具，真要群发请用专门的邮件营销服务，并用子域名发，别污染主域名信誉。</li>
+<li><strong>有没有被列入黑名单。</strong> 如果某个收件方明确退信并附了黑名单字样，按退信提示去对应名单申请移除；多数情况是共享发送 IP 被连累，换服务商或等一段时间会自行恢复。</li>
+</ol>
+<h2>一年下来要花多少钱</h2>
+<p>算笔账：域名本身一年几十到一百多元（<code>.com</code> 大致在这个区间，续费价为准）；只收信的方案，Cloudflare Email Routing 免费，总成本就是域名钱；完整邮箱走 Zoho、腾讯企业邮箱的免费档，也是零服务费，只是功能和容量有限；Google Workspace、Microsoft 365 这类付费档，起步价大约每人每月几美元到几十元人民币，胜在稳定和生态。我的建议是：个人用，先免费档跑起来，真用出依赖了再考虑付费，别一上来就为用不上的容量买单。</p>
+<h2>Cloudflare Email Routing 的位置，说句实话</h2>
+<p>它在整套方案里是个「收信前台」：适合把域名邮箱当对外联系地址、在简历上露出，实际收件还是落到你日常用的邮箱里。它的短板前面说了——不能以域名身份发信。补救办法也有：配合一个支持 SMTP 的发送服务（如 Amazon SES、Resend 等）在 Gmail 里配置「以此地址发送」，但这属于进阶玩法，配错了 SPF 反而扣分。普通用户我的建议很简单：只收信就用它，省心免费；真要频繁对外发信，直接上完整邮箱服务，别拼凑。</p>
+<h2>相关导航</h2>
+<ul>
+<li><a href="https://821066.xyz/blog/posts/domain-diy">域名、邮箱、网络工具怎么搭：一套完整动线</a></li>
+<li><a href="https://821066.xyz/blog/">博客首页：每周要闻与工具手记</a></li>
+<li><a href="https://821066.xyz/">站内「域名与邮箱」分类收录</a></li>
+</ul>
+<p>——「醉生梦死导航」维护者</p>
+</article>
+<p><a href="https://821066.xyz/blog/">← 返回博客列表</a> · <a href="https://821066.xyz/">醉生梦死导航首页</a></p>
+</main>
+</body>
+</html>
