@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>数据可视化工具实操指南：从 Excel 图表到仪表盘</title>
+  <meta name="description" content="按需求五层选工具：Excel、Python、Grafana、CAD 出图与 PPT 汇报图，附三大翻车点与数据前置动作。">
+  <link rel="canonical" href="https://821066.xyz/blog/posts/data-visualization-tools.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/tailwind.min.css">
+  <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans antialiased">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+    <nav class="mb-8 flex flex-wrap items-center justify-between gap-2 text-sm">
+      <a href="/" class="font-semibold text-gray-900 dark:text-gray-100 hover:text-blue-600 transition-colors">醉生梦死导航</a>
+      <div class="flex flex-wrap gap-4 text-gray-500 dark:text-gray-400">
+        <a href="/about.html" class="hover:text-blue-600">关于</a>
+        <a href="/privacy.html" class="hover:text-blue-600">隐私政策</a>
+        <a href="/contact.html" class="hover:text-blue-600">联系我们</a>
+        <a href="/disclaimer.html" class="hover:text-blue-600">免责声明</a>
+        <a href="/site-guide.html" class="hover:text-blue-600">策展指南</a>
+        <a href="/blog/" class="text-gray-900 dark:text-gray-100 font-medium">博客</a>
+      </div>
+    </nav>
+
+    <div class="leading-7 text-[15px]"><h1 class='text-2xl sm:text-3xl font-bold mb-3'>数据可视化工具实操指南：从 Excel 图表到仪表盘</h1>
+<p class='my-2'>工程师的画图需求，八成本质上就五类：快速看图、专业统计图、长期监控、工程出图、汇报用图。先定是哪一类，再挑工具，比「学一门最强的」现实得多。这篇按需求分层给推荐，每类一句话讲清「什么时候选它」，最后附三个翻车高发点。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>第一层：快速看图 → Excel 自带图表</h2>
+<p class='my-2'><strong>什么时候选它</strong>：数据在一千行以内、图是一次性看一眼、结果不会被别人复用。</p>
+<p class='my-2'>Excel 图表的优势不是能力，是「数据就在眼前」——台账拉出来直接插个折线，五分钟出图。局限同样明显：图和数据强耦合，样式调整靠手，多张子图基本放弃。快速上手细节（常用图表类型、数据区域怎么选）参考 <a href=\"https://821066.xyz/blog/posts/free-office-tools-combo.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>免费办公工具组合</a> 里办公篇。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>第二层：专业统计图 → Python matplotlib / plotly</h2>
+<p class='my-2'><strong>什么时候选它</strong>：要批量出图（循环几十场降雨、几十个断面）、要可复现（脚本存下来下季度还能重跑）、要多子图排版。</p>
+<p class='my-2'>matplotlib 出静态图（PDF/PNG）走正式报告，plotly 出交互式 HTML（悬停看数值、滚轮缩放）走自查探索。水利工程场景的典型例子：一次水文计算要对比 12 个断面 30 年的流量过程线，手画 Excel 图会画到怀疑人生，脚本 20 行搞定。具体表格建模与计算部分见 <a href=\"https://821066.xyz/blog/posts/hydrology-spreadsheet-calc.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>水文学表格计算</a>，出图脚本接在后面跑。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>第三层：长期监控 → Grafana</h2>
+<p class='my-2'><strong>什么时候选它</strong>：有持续产生的数据（服务指标、传感器、气象站），要「随时回来看趋势 + 越限告警」，而不是一次性图。</p>
+<p class='my-2'>Grafana 配 Prometheus 是标准组合：Prometheus 收指标，Grafana 画图，告警规则推给机器人。它解决的不是「这张图画得美不美」，而是「没人盯着的数据谁负责」。配合自托管监控那一层一起用，参考 <a href=\"https://821066.xyz/blog/posts/self-hosted-services.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>自托管服务指南</a>。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>第四层：工程出图 → 工具链出图 + CAD 排版</h2>
+<p class='my-2'><strong>什么时候选它</strong>：图要进正式成果文件（报告、申报书、归档材料），Excel 手绘图拿不出手。</p>
+<p class='my-2'>工程模拟类工具自带出图（降雨径流、管网水力分析的流量曲线、水位线直接出标准图），出图后统一进 CAD 排版——图幅、图框、图签、字高在 CAD 里控制，打印不出格。在线工具类入口（计算器、图表生成器）集中在 <a href=\"https://821066.xyz/blog/posts/water-engineering-online-tools.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>水利在线工具</a>，适合中间环节，正式出图别全押在线。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>第五层：汇报用图 → PPT 嵌入的三个要点</h2>
+<p class='my-2'><strong>什么时候选它</strong>：图给领导或评审看，停留时间不超过 15 秒。</p>
+<p class='my-2'>三个要点：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>分辨率</strong>：截图贴 PPT 放大就糊，用 2x 以上尺寸的原图或矢量 PDF 转图；</li>
+<li><strong>字号</strong>：图内轴标签不小于 10pt（按最终放映尺寸算），看不清的轴不如不画；</li>
+<li><strong>标题即结论</strong>：标题写「枯期流量下降 40%」而不是「流量变化图」，让读者不读轴也能拿到结论。</li>
+</ul>
+<h2 class='mt-8 mb-3 text-xl font-bold'>三个翻车高发点，怎么修正</h2>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>颜色不色盲友好</strong>：红绿搭配是重灾区（男性色觉异常比例不低）。修正：主色用蓝橙/蓝红（蓝黄），色觉模拟器在线过一遍再定稿；分类图超过 4~5 类就改用直排标注而不是图例。</li>
+<li><strong>单位不标</strong>：纵轴只写数字不写 m³/s，读者要自己猜量级。修正：轴标签强制带单位（「流量 (m³/s)」)，图注里写清数据来源和时间段；这是翻车最多的点，没有之一。</li>
+<li><strong>截断 Y 轴误导</strong>：纵轴从 40 起画到 50，一条 45→49 的线画得像「暴涨 80%」。修正：确实要强调小幅变化可以用截断轴，但必须在图上明确标出截断点或写「Y 轴 40~50」；汇报趋势时优先用零基线，别拿截断轴偷结论。</li>
+</ul>
+<h2 class='mt-8 mb-3 text-xl font-bold'>需求 → 工具 快速对照</h2>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>看一眼就过 → Excel 图表；</li>
+<li>批量、复现、多子图 → Python（matplotlib 静态 / plotly 交互）；</li>
+<li>持续数据 + 告警 → Grafana + Prometheus；</li>
+<li>进正式成果 → 工具链出图 + CAD 排版；</li>
+<li>给领导 15 秒看懂 → PPT 嵌入三要点（高分辨率、10pt+ 轴标签、结论式标题）。</li>
+</ul>
+<p class='my-2'>工具链选对了，剩下的是审美问题；选错了，审美再在线也救不回来。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>画图之前：数据侧的四个前置动作</h2>
+<p class='my-2'>工具再强，喂进去的数据脏，图就是废纸。四个前置动作，顺序不能反：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>单位统一</strong>：m³/s 和 m/s、mm 和 cm 混在一个数据源里，先换算对齐再画图，换算公式写进脚本别靠心算；</li>
+<li><strong>缺值处理</strong>：缺测值不能直接让插值算法猜，先查缺失原因（设备故障/人工漏记），处理策略（剔除/标记/插补）写进报告方法章；</li>
+<li><strong>异常值</strong>：超出物理范围的值（流量为负、水位超过堤顶高程）先按「测错」处理，别让它进统计；</li>
+<li><strong>时间基准</strong>：跨流域、跨年份对比的图，统一时区和水文年（7 月 1 日起算），不然 6 月底 7 月初的数据会串年。</li>
+</ul>
+<p class='my-2'>这四个动作在 <a href=\"https://821066.xyz/blog/posts/hydrology-spreadsheet-calc.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>水文学表格计算</a> 里有对应的表格校验方法，图和数据两套口径对不上是工程图最常见的低级错误。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>图型怎么选：一张对照</h2>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>趋势</strong>（流量过程线、水位变化）→ 折线，多序列时线粗/线型区分，别全用颜色；</li>
+<li><strong>比较</strong>（多断面同一指标）→ 条形图，类别超 8 个就分组或 Top-N + 其余合并；</li>
+<li><strong>分布</strong>（场次降雨、粒径）→ 直方图/箱线图，箱线图给中位数和离群值，直方图给密度；</li>
+<li><strong>相关</strong>（流量 vs 含沙量）→ 散点 + 拟合线，点太密换半透明叠加；</li>
+<li><strong>空间</strong>（网格化数据、等值面）→ 热力图/等值面，注意等值面工具的分辨率标注。</li>
+</ul>
+<p class='my-2'>选错图型比选错工具伤害大：拿柱状图画过程线，评审第一眼就觉得不专业。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>图的「署名」习惯</h2>
+<p class='my-2'>正式成果里的每张图，图注四要素固定：数据来源（仪器/站点/模式名）、时间段、处理说明（是否插补/滤波）、制图日期。图注写全，别人复现你的图不用找你。这套习惯顺手带进周报和台账，见 <a href=\"https://821066.xyz/blog/posts/free-office-tools-combo.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>免费办公工具组合</a> 的表格篇。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>从草稿到定稿：三轮打磨</h2>
+<p class='my-2'>工程图的「丑」大多不是工具问题，是轮次问题。固定三轮：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>第一遍（出草稿）</strong>：先把图跑通，数据对了就行，样式全不管，目的是发现数据侧的错误（单位、缺值、异常）；</li>
+<li><strong>第二遍（定样式）</strong>：统一线宽字号、色板（蓝橙系为主）、图例位置（不遮数据），这一遍同时过一遍色觉模拟器；</li>
+<li><strong>第三遍（定结论）</strong>：标题改结论式、图注补四要素、打印/放映实测一遍（PPT 里放大 1.5 倍看轴标签清不清晰）。</li>
+</ul>
+<p class='my-2'>三轮分开做，别在出图阶段纠结样式、定稿阶段才发现数据错——顺序反了返工成本翻倍。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>给团队交接的图：交互版和静态版都要</h2>
+<p class='my-2'>给同事自查用的图，plotly 的交互 HTML 最好使（悬停看数值、框选放大），发个文件就走；给评审和归档的图，静态 PDF/PNG 为准（交互文件对方环境不一定打得开）。一份数据两个产物，成本几乎为零：脚本跑一次，`plotly` 出 html、`matplotlib` 出 pdf，两条命令的事。命名带日期和版本号（`断面流量_2026Q3_v2.html`），交接时对方知道看的是哪一版。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>一句收尾</h2>
+<p class='my-2'>图表的工具是后手，前面三件事才是前手：数据口径统一、图型选对、结论写在标题里。这三件做到位，用什么工具都出好图；做不到，再贵的软件也救不回来。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>补一个常被问的：图放博客/网页里怎么办</h2>
+<p class='my-2'>网页嵌入图的原则：静态图用小体积 WebP/PNG（单张 200KB 以内，首屏别上大图）、交互图直接嵌 plotly 的 HTML 文件（带说明和日期版本）、数据本身放可下载的表格附在后面（读者要能拿原始数据，不是只看图）。图放网页的排版习惯，和 <a href=\"https://821066.xyz/blog/posts/static-site-hosting-comparison.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>静态站点托管对比</a> 里页面加载优化一节是同一套思路。</p>
+<p class='my-2'>*本文 2026-11-12 更新 · 工具版本以当前主流为准，水利工程出图规范另以行业标准规定为准*</p></div>
+    <footer class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+      <div class="flex flex-wrap gap-x-4 gap-y-1">
+        <a href="/" class="hover:text-blue-600">首页</a>
+        <a href="/about.html" class="hover:text-blue-600">关于</a>
+        <a href="/privacy.html" class="hover:text-blue-600">隐私政策</a>
+        <a href="/contact.html" class="hover:text-blue-600">联系我们</a>
+        <a href="/disclaimer.html" class="hover:text-blue-600">免责声明</a>
+        <a href="/site-guide.html" class="hover:text-blue-600">策展指南</a>
+        <a href="/blog/" class="hover:text-blue-600">博客</a>
+      </div>
+      <p class="mt-3">© 2026 醉生梦死导航 · 博客内容由 Hermes 自动汇总生成，摘要信息以原文链接为准</p>
+    </footer>
+  </div>
+</body>
+</html>

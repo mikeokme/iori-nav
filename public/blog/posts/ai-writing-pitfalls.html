@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>让 AI 帮你写材料，但别写成「AI 味」：实用避坑指南</title>
+  <meta name="description" content="AI 生成文本的五种典型病症与六招去 AI 味手法，附三类 AI 写不出来的料与自检清单。">
+  <link rel="canonical" href="https://821066.xyz/blog/posts/ai-writing-pitfalls.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/tailwind.min.css">
+  <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans antialiased">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+    <nav class="mb-8 flex flex-wrap items-center justify-between gap-2 text-sm">
+      <a href="/" class="font-semibold text-gray-900 dark:text-gray-100 hover:text-blue-600 transition-colors">醉生梦死导航</a>
+      <div class="flex flex-wrap gap-4 text-gray-500 dark:text-gray-400">
+        <a href="/about.html" class="hover:text-blue-600">关于</a>
+        <a href="/privacy.html" class="hover:text-blue-600">隐私政策</a>
+        <a href="/contact.html" class="hover:text-blue-600">联系我们</a>
+        <a href="/disclaimer.html" class="hover:text-blue-600">免责声明</a>
+        <a href="/site-guide.html" class="hover:text-blue-600">策展指南</a>
+        <a href="/blog/" class="text-gray-900 dark:text-gray-100 font-medium">博客</a>
+      </div>
+    </nav>
+
+    <div class="leading-7 text-[15px]"><h1 class='text-2xl sm:text-3xl font-bold mb-3'>让 AI 帮你写材料，但别写成「AI 味」：实用避坑指南</h1>
+<p class='my-2'>我每周都要让 AI 帮我写周报、汇报和方案。写得是真快，一分钟出初稿。但有个问题躲不掉：稿子带着浓烈的「机器味」，领导和评审一眼就能认出来。这篇文章记录我自己的踩坑过程：先认病，再给 6 招直接能用的手法，最后附一份发送前的自检清单。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>一、先认病：AI 味到底长什么样</h2>
+<p class='my-2'>AI 写的东西病不重，但很固定，基本就这五种：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>排比堆砌</strong>。一连三个「高效、精准、闭环」，每项都规规矩矩，堆在一起却没有信息量。</li>
+<li><strong>空洞形容词</strong>。「显著」「深远」「全面」后面不跟任何具体指代。把形容词删掉，句子还是完整句，说明它们是凑数的。</li>
+<li><strong>套话收尾</strong>。「综上所述」「展望未来」「让我们携手」，看到这几句，基本可以断定是模型在收工。</li>
+<li><strong>节奏均匀</strong>。每句差不多长，每段差不多结构，读起来像流水线产品，让人犯困。</li>
+<li><strong>没有数字和场景</strong>。通篇「取得显著成效」「进一步深化」，但没有一处告诉你具体是多少、什么时候、谁干的。</li>
+</ul>
+<p class='my-2'>病认得准，药才好下。</p>
+<p class='my-2'><strong>行动</strong>：今晚把你最近一篇 AI 润色过的稿子拿出来，把这五种病挨个标一遍，数一下各出现几次。心里有数了，后面才知道往哪里改。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>二、六招去 AI 味</h2>
+<h3 class='mt-6 mb-2 text-base font-semibold'>1. 给具体约束，别只说「写得好一点」</h3>
+<p class='my-2'>Prompt 里写「写得专业、详实」，AI 就会回你一堆「显著」「全面」。把要求换成硬指标：字数、条数、禁词。</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>之前：「帮我写一份周报，要专业、详实。」</li>
+<li>现在：「本周周报，300 字以内，3 条：A 已完成（结果数字），B 进行中（卡在哪一步），C 被谁挡着。禁止使用形容词。」</li>
+</ul>
+<p class='my-2'>同一件事，第二种问法出来的稿子基本能直接用。</p>
+<h3 class='mt-6 mb-2 text-base font-semibold'>2. 逼它带数字和案例</h3>
+<p class='my-2'>「用户满意度显著提升」这种话，领导读完不知道提升的是谁、提升了多少。Prompt 里加一句：「每个结论后面必须跟数字或具体例子；没有数据就写『数据未统计』，不许用形容词凑。」</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>之前：「用户满意度显著提升，问题处理效率大幅提高。」</li>
+<li>现在：「上周客诉工单 17 张，比前一周少 8 张，主要因 6 点后的批次延迟。」</li>
+</ul>
+<h3 class='mt-6 mb-2 text-base font-semibold'>3. 用第一人称口语</h3>
+<p class='my-2'>AI 的默认腔调是公文腔：「项目组对方案进行了全面复盘并作出相应调整」。让它装人：「用『我们』或『我』来写，像跟同事口头汇报，允许不完整句。」</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>之前：「项目组对方案进行了全面复盘并作出相应调整。」</li>
+<li>现在：「周一我们把方案拉出来过了一遍，发现漏了压测环节，补上了。」</li>
+</ul>
+<h3 class='mt-6 mb-2 text-base font-semibold'>4. 删掉转折连接词</h3>
+<p class='my-2'>「首先、其次、再次、最后」「此外」「值得注意的是」，这类词是模型用来显摆结构的，内容本身不靠它们。删掉，句子照样连贯。</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>之前：「首先，我们优化了流程。其次，我们提升了效率。最后，我们降低了成本。」</li>
+<li>现在：「流程理顺了，效率自然上来了，成本也跟着降。」</li>
+</ul>
+<h3 class='mt-6 mb-2 text-base font-semibold'>5. 让 AI 删掉它自己的形容词</h3>
+<p class='my-2'>出稿之后加一轮指令：「把这段里所有删掉之后不影响意思的形容词、副词划掉，只留动词和数字。」我拿月度总结试过，一轮删除下来紧实很多，读起来才像人写的。</p>
+<h3 class='mt-6 mb-2 text-base font-semibold'>6. 喂它你自己过去的样本</h3>
+<p class='my-2'>AI 写得「平」，根子在于它不知道你平时怎么写。把你的 2 到 3 篇旧稿喂给它，附一句：「模仿这篇的行文风格，不要模仿内容。」样本可以放在<a href=\"https://821066.xyz/blog/posts/note-taking-knowledge-base.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>笔记或知识库</a>里，每次开写前调出来粘上就行。</p>
+<p class='my-2'><strong>行动</strong>：从上面挑 1 到 2 条你现在用得上，下一篇周报就照着写。不用一次全上，一次只改一个习惯。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>三、「AI 味重灾区」句子：改写示范</h2>
+<p class='my-2'>挑三句我见得最多的，直接给改写前后。</p>
+<p class='my-2'><strong>原句一</strong></p>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>在当今数字化时代，公司通过数据赋能，构建了智能化闭环体系，有效提升了业务协同效率。</blockquote>
+<p class='my-2'><strong>改写</strong></p>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>我们现在看一张看板就能排活儿。上个月这一步要开三次会、耗三天，现在半天。</blockquote>
+<p class='my-2'>原句里没有一个数字，也没说谁在看什么。改写之后，「三天变半天」是具体发生过的，读者才信。</p>
+<p class='my-2'><strong>原句二</strong></p>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>展望未来，我们将持续深化改革，拓展新场景，携手共筑生态繁荣。</blockquote>
+<p class='my-2'><strong>改写</strong></p>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>下一步先做一件事：把 XX 流程跑通。跑通之后再定第二件，不拍脑袋。</blockquote>
+<p class='my-2'>「共筑生态繁荣」删掉，不损失任何信息。人话只说要干什么、先干哪个。</p>
+<p class='my-2'><strong>原句三</strong></p>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>让我们正视行业的挑战，共同思考未来方向。</blockquote>
+<p class='my-2'><strong>改写</strong></p>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>行业现在都在观望，我们的打法是先出产品，用真实用户反馈代替争论。</blockquote>
+<p class='my-2'><strong>行动</strong>：下次 AI 出稿，让它按这三句的标准自己改一遍：「把形容词全删，每个结论带数字或例子，用『我们』的口吻重写。」</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>四、工具和习惯：让 AI 长期写得像你</h2>
+<p class='my-2'>工具的选择只影响速度，不影响味道。还在选工具的话，先看一篇<a href=\"https://821066.xyz/blog/posts/ai-assistants-comparison-guide.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>AI 助手横评</a>；手上常用的一批工具，<a href=\"https://821066.xyz/blog/posts/ai-tools.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>AI 工具</a>那页整理过，不用重复收集。</p>
+<p class='my-2'>去 AI 味这件事，真正的材料在写之前。平时记下的数字、实例、吐槽，才是 AI 写不出来的部分。办公端想白嫖的工具组合，<a href=\"https://821066.xyz/blog/posts/free-office-tools-combo.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>免费办公工具组合</a>那页可以直接抄。</p>
+<p class='my-2'><strong>行动</strong>：这周开一个「素材箱」，手机备忘录就行。记下本周真实发生的 3 个数字和 1 个实例，下周写周报直接往里要。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>五、发送前的 5 条自检清单</h2>
+<p class='my-2'>发出去之前，花三分钟过一遍：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>数字</strong>：正文里有没有至少一个具体数字、时间点或人名？</li>
+<li><strong>形容词</strong>：把每个「显著、深入、全面」划掉，意思还在就删。</li>
+<li><strong>连接词</strong>：「首先、其次、最后、综上所述」在不在？在就删。</li>
+<li><strong>节奏</strong>：出声读一遍。每段是不是差不多长？差不多就拆开或合并。</li>
+<li><strong>亲历</strong>：有没有一句是 AI 编不出来的，只有「我／我们」干过才写得出来？</li>
+</ul>
+<p class='my-2'>五条全中，基本可以发了。最后一步永远不交给 AI，交给你自己的三分钟。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>六、AI 写不出来的三类料</h2>
+<p class='my-2'>去 AI 味做到底，发现不是「改写」的问题，是「原料」的问题。三类东西 AI 永远写不出来，必须自己先备好：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>现场数字</strong>：具体到「本次降雨 87mm、超十年一遇阈值 12%」这种，模型只能编到「显著增大」；</li>
+<li><strong>人的判断和取舍</strong>：「两个方案为什么选乙不选甲」的代价意识，模型给的是两边都对的废话；</li>
+<li><strong>失败成本</strong>：「上次没做校验导致返工三天」这类亲历教训，是材料里最值钱的部分。</li>
+</ul>
+<p class='my-2'>写作前的动作固定：先写下这三类料（哪怕各一条），再让 AI 起草。料比提示词重要。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>七、建一个自己的「风格样本库」</h2>
+<p class='my-2'>让 AI 长期写得像你，最有效的是喂样本，不是调形容词：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>存 5~10 篇你写得最顺手的旧稿（周报、汇报、方案各存几篇），放一个固定文件夹；</li>
+<li>每次让 AI 起草前，先丢 2 篇样本，指令写「按这两篇的句式长度、用词习惯和收尾方式写」；</li>
+<li>每两周翻一次样本库，删掉已经不像你的旧稿，补进新写的；</li>
+<li>样本库里不放 AI 改过的稿子——那会把机器味固化成你的风格。</li>
+</ul>
+<p class='my-2'>这套做法和笔记体系里的素材管理是一回事，方法可以直接套 <a href=\"https://821066.xyz/blog/posts/note-taking-knowledge-base.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>知识库与笔记体系</a> 的归档结构。</p></div>
+    <footer class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+      <div class="flex flex-wrap gap-x-4 gap-y-1">
+        <a href="/" class="hover:text-blue-600">首页</a>
+        <a href="/about.html" class="hover:text-blue-600">关于</a>
+        <a href="/privacy.html" class="hover:text-blue-600">隐私政策</a>
+        <a href="/contact.html" class="hover:text-blue-600">联系我们</a>
+        <a href="/disclaimer.html" class="hover:text-blue-600">免责声明</a>
+        <a href="/site-guide.html" class="hover:text-blue-600">策展指南</a>
+        <a href="/blog/" class="hover:text-blue-600">博客</a>
+      </div>
+      <p class="mt-3">© 2026 醉生梦死导航 · 博客内容由 Hermes 自动汇总生成，摘要信息以原文链接为准</p>
+    </footer>
+  </div>
+</body>
+</html>

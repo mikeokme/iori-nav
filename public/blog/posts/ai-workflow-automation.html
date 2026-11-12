@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>搭建个人 AI 工作流：从转写、纪要到文档生成的实操路径</title>
+  <meta name="description" content="录音到成品的完整链路：本地 Whisper 转写、LLM 结构化提炼、周报自动生成与四个踩坑实录。">
+  <link rel="canonical" href="https://821066.xyz/blog/posts/ai-workflow-automation.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/tailwind.min.css">
+  <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans antialiased">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+    <nav class="mb-8 flex flex-wrap items-center justify-between gap-2 text-sm">
+      <a href="/" class="font-semibold text-gray-900 dark:text-gray-100 hover:text-blue-600 transition-colors">醉生梦死导航</a>
+      <div class="flex flex-wrap gap-4 text-gray-500 dark:text-gray-400">
+        <a href="/about.html" class="hover:text-blue-600">关于</a>
+        <a href="/privacy.html" class="hover:text-blue-600">隐私政策</a>
+        <a href="/contact.html" class="hover:text-blue-600">联系我们</a>
+        <a href="/disclaimer.html" class="hover:text-blue-600">免责声明</a>
+        <a href="/site-guide.html" class="hover:text-blue-600">策展指南</a>
+        <a href="/blog/" class="text-gray-900 dark:text-gray-100 font-medium">博客</a>
+      </div>
+    </nav>
+
+    <div class="leading-7 text-[15px]"><h1 class='text-2xl sm:text-3xl font-bold mb-3'>搭建个人 AI 工作流：从转写、纪要到文档生成的实操路径</h1>
+<p class='my-2'>我做工程一线，日常工作节奏是：早上开个会、下午审几张图、周末写一份周报、偶尔还要补项目台账。真正在一线产生的判断占少数，大量时间花在「把现场的事变成纸上的事」：听录音、整理、写、排格式。这套从录音到成品的链路，是我这几个月搭出来的，这篇把路径写清楚，不聊概念，只讲我怎么跑通的。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>1. 先看全局：输入、处理、输出三层</h2>
+<p class='my-2'>整条链路分三层，值得先画在纸上。</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>输入层</strong>：都是原材料。会议录音、通话记录、邮件和聊天文本、规范文件、图纸 PDF。</li>
+<li><strong>处理层</strong>：转写（把说的话变成文字）、摘要（把长的变短）、提炼（把混杂的拆成行动项和结论）。</li>
+<li><strong>输出层</strong>：别人能直接用的成品。纪要、周报、台账条目、工单。</li>
+</ul>
+<p class='my-2'>关键在<strong>每层解耦</strong>。转写不稳定就先修转写，提炼不对就只换提示词。别做端到端的一坨黑盒，最后排查起来是灾难。</p>
+<p class='my-2'>我第一版就是端到端：录完直接丢给大模型出周报，结果它把转写错字原样写进周报，我还得回头核对，比手动还慢。拆成三层之后，错字在转写那层就拦住了，后面各层各管各的，改起来不互相牵连。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>2. 转写：为什么本地 Whisper 是首选</h2>
+<p class='my-2'>录音转写我固定用本地的 <strong>faster-whisper</strong>，理由有两个。</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>开会的内容里很多是现场才敲定的东西，走云端 API 有合规顾虑，而且录音动辄一两小时，本地跑反而省事。</li>
+<li>本地一次装好，模型不大，家里的机器就够跑，不用再买什么加速卡。</li>
+</ul>
+<p class='my-2'>实际踩过两个坑，直接说：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>语言识别</strong>。自动检测语言的时候，偶尔把一场中文会判成英文，出来一堆乱码。中文会就显式指定 `language=zh`，一劳永逸。</li>
+<li><strong>专业词</strong>。水利的词它经常认不准，「除险加固」转成「除信加固」，「衬砌」转成「陈七」。逐个改不现实，我维护了一份热词表，在转写那步传进去。不是全对，但错得少了。</li>
+</ul>
+<p class='my-2'>输出我固定两种格式：<strong>SRT</strong>（带时间戳，方便定位到原句）和<strong>纯 Markdown</strong>（方便改）。转完不要闭着眼直接用，人过一遍，至少把人名和关键数字核对掉。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>3. 从纪要到行动项：让 LLM 输出结构化</h2>
+<p class='my-2'>有了干净文本，下一步是结构化的活。这里有个最容易犯的错：<strong>别跟 LLM 说「总结一下这次会议」</strong>，它会还你一段正确的废话。</p>
+<p class='my-2'>给它固定的输出结构，直接照下面写：</p>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>- <strong>结论</strong>：已经拍板的事，每条一行</blockquote>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>- <strong>行动项</strong>：每条必须含「做什么 / 谁做 / 什么时候完成」三个字段，缺了就标「待定」</blockquote>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'>- <strong>待确认</strong>：会上没定下来的，单独列出来</blockquote>
+<p class='my-2'>这套模板我在笔记库里存了一份，<a href=\"https://821066.xyz/blog/posts/note-taking-knowledge-base.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>这篇讲怎么把笔记整理成知识库</a>，以后每次直接引用，不用重写。输出格式一旦固定，下游的周报、台账就能直接引用它。</p>
+<p class='my-2'>模型选谁，看内容敏感程度：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>内部、非敏感的会，本地 <strong>Ollama</strong> 跑一个 7B 级别的模型，提行动项够用，零成本，东西不出机器。</li>
+<li>长文本、复杂一点的活儿，换云端大模型，质量高一截。<a href=\"https://821066.xyz/blog/posts/ai-assistants-comparison-guide.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>这篇助手对比</a> 里几家都有，我就不重复了。</li>
+</ul>
+<p class='my-2'>有一条我始终没松过：<strong>LLM 只出草稿，最终纪要我要过一遍</strong>。它可能编一个没人说过的「行动项」，错了就顺着流进下次会议。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>4. 文档生成：周报和台账别再从零开始</h2>
+<p class='my-2'>输出层一固定，「写」这件事基本就消失了。我的周报是这样跑的：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>把这周几份纪要和几条工单记录丢给 LLM，就一句指令：按「本周进展 / 下周计划 / 风险与待确认」写。</li>
+<li>出来的初稿基本能用，我只改几处措辞不合适的地方。以前得坐下来码一阵子，现在就是校对。</li>
+</ul>
+<p class='my-2'>台账同理。我让 LLM 把纪要里的「行动项」抽成<strong>固定字段</strong>的一行（编号 / 责任人 / 截止时间 / 状态 / 来源会议），直接落到 Excel。这里有个硬规矩：<strong>字段名不能变</strong>。台账是要累积用的，字段一会儿一个样，三周之后就废了。</p>
+<p class='my-2'>审图纸这件事我收着点用。让 LLM 做「初筛」：把图上的文字和规范读进来，对照一张检查清单列出可能缺项或冲突的地方，我逐条判。<strong>初筛可以交给它，签字不行</strong>。</p>
+<p class='my-2'>成品的格式这一步，我用 <strong>pandoc</strong>（Markdown 转 Word）加自做的 python-docx 模板。如果不想自己造轮子，<a href=\"https://821066.xyz/blog/posts/free-office-tools-combo.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>这篇免费办公工具组合</a> 可以照着配。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>5. 让它自动跑：先手跑通，再谈自动化</h2>
+<p class='my-2'>手动路径验证过了，才上自动化。我是用 Windows 计划任务挂一个小脚本，每晚跑：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>扫「输入」文件夹里有没有新录音</li>
+<li>有的话跑 whisper 转写，落到「转写稿」文件夹</li>
+<li>再跑 Ollama 提行动项，追加进台账</li>
+</ul>
+<p class='my-2'>这就是 <a href=\"https://821066.xyz/blog/posts/automate-repetitive-work.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>这篇讲自动化重复工作</a> 里的思路，核心一条：<strong>只自动化你已经手做三遍的东西</strong>。手动流程不稳，自动化只是让它错得更快。</p>
+<p class='my-2'>两个原则，都是教训换来的：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>管道做窄</strong>。一个脚本只干一件事，输出到独立文件夹，哪一环断了能看出来。</li>
+<li><strong>坏了就退回手动</strong>。自动化是省时间，不是制造「脚本一报错我就干不了活」的依赖。</li>
+</ul>
+<h2 class='mt-8 mb-3 text-xl font-bold'>6. 收尾：从一个场景开始</h2>
+<p class='my-2'>想今天就开始，别搭全链路，只做一件事：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>选下一场会，录下来，本地转写一遍，让 LLM 提三条行动项。</li>
+<li>这个环跑通，再加第二场，再加周报，再加台账。</li>
+</ul>
+<p class='my-2'>整条链不神秘，就是把「说出来的话」变成「结构化文本」，一环一环接起来。真正花时间的是第一周，第二周起基本是顺手。</p>
+<p class='my-2'>跑出来的东西会越堆越多，别怕丢，放进笔记体系再定期备份。<a href=\"https://821066.xyz/blog/posts/personal-data-backup-sync.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>这篇个人数据备份同步</a> 照着做就行。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>踩坑实录：这四个坑都踩过一遍</h2>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>转写错字进周报</strong>：口语里的同音词（「标段/秒段」）被原样带进成品。修法：转写层加一个「术语白名单」提示词，把项目里的高频专名列进去；出稿前用 grep 扫一遍错字特征词。</li>
+<li><strong>LLM 编造参会人</strong>：录音里提到的人名会被模型补全成「张工、李工」式的虚构名字。修法：行动项输出时要求「只写录音里实际出现的称呼，没出现就写『未提及』」，别给模型发挥空间。</li>
+<li><strong>自动化先于稳定</strong>：第三周就写了自动发周报邮件的脚本，结果连着两周把草稿版发出去了。修法：任何自动发出动作前，留一个人工确认环节（发前预览 + 手动点确认），至少跑满一个月再考虑全自动。</li>
+<li><strong>多模型混用串版本</strong>：转写一个模型、摘要一个模型、周报又一个模型，改一处参数全链路行为漂移。修法：全链路固定一套模型版本，升级时一次全升、留好回滚脚本。</li>
+</ul>
+<blockquote class='my-4 p-4 bg-gray-50 dark:bg-gray-800 border-l-4 border-blue-500 text-sm text-gray-600 dark:text-gray-300'><strong>下一步，今天就做</strong>：录一场真会，faster-whisper 转写，本地 Ollama 提行动项，落到一张表里。哪一步卡住，只修哪一步，别一上来就想全自动。</blockquote></div>
+    <footer class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+      <div class="flex flex-wrap gap-x-4 gap-y-1">
+        <a href="/" class="hover:text-blue-600">首页</a>
+        <a href="/about.html" class="hover:text-blue-600">关于</a>
+        <a href="/privacy.html" class="hover:text-blue-600">隐私政策</a>
+        <a href="/contact.html" class="hover:text-blue-600">联系我们</a>
+        <a href="/disclaimer.html" class="hover:text-blue-600">免责声明</a>
+        <a href="/site-guide.html" class="hover:text-blue-600">策展指南</a>
+        <a href="/blog/" class="hover:text-blue-600">博客</a>
+      </div>
+      <p class="mt-3">© 2026 醉生梦死导航 · 博客内容由 Hermes 自动汇总生成，摘要信息以原文链接为准</p>
+    </footer>
+  </div>
+</body>
+</html>

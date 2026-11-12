@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>个人自托管服务指南：一台小主机上值得跑什么</title>
+  <meta name="description" content="八类值得自托管的服务选型与 4C8G 小主机配置清单，附电费账、故障预案与维护节奏。">
+  <link rel="canonical" href="https://821066.xyz/blog/posts/self-hosted-services.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/tailwind.min.css">
+  <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans antialiased">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+    <nav class="mb-8 flex flex-wrap items-center justify-between gap-2 text-sm">
+      <a href="/" class="font-semibold text-gray-900 dark:text-gray-100 hover:text-blue-600 transition-colors">醉生梦死导航</a>
+      <div class="flex flex-wrap gap-4 text-gray-500 dark:text-gray-400">
+        <a href="/about.html" class="hover:text-blue-600">关于</a>
+        <a href="/privacy.html" class="hover:text-blue-600">隐私政策</a>
+        <a href="/contact.html" class="hover:text-blue-600">联系我们</a>
+        <a href="/disclaimer.html" class="hover:text-blue-600">免责声明</a>
+        <a href="/site-guide.html" class="hover:text-blue-600">策展指南</a>
+        <a href="/blog/" class="text-gray-900 dark:text-gray-100 font-medium">博客</a>
+      </div>
+    </nav>
+
+    <div class="leading-7 text-[15px]"><h1 class='text-2xl sm:text-3xl font-bold mb-3'>个人自托管服务指南：一台小主机上值得跑什么</h1>
+<p class='my-2'>自托管这件事，工程师圈子里玩的人很多，但大多数人卡在一个问题上：到底该跑什么？这篇给一个务实的答案——按「数据所有权、成本、可控性」三个维度，挑出真正值得搬回家里的服务，配上一台 4 核 8G 小主机的参考清单。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>先说什么时候不该自托管</h2>
+<p class='my-2'>清醒判断放在前面，能省很多折腾：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>访问量很低的个人站点</strong>：一年点不开几次访问，托管在静态托管服务上比家里挂个 VPS 便宜得多，还不用管机器宕机；</li>
+<li><strong>需要高可用或 SLA 的业务</strong>：家里断网断电就是事故，别拿它跑生产；</li>
+<li><strong>邮件</strong>：公网 IP 发邮件，送达率玄学（IP 上黑名单、SPF/DKIM 配置），除非你有专门的 IP 资源，否则用托管邮箱；</li>
+<li><strong>违反平台条款的场景</strong>：用自托管给平台内容做加速/爬虫，随时被封；</li>
+<li><strong>家里没 7×24 稳定电和网</strong>：硬件不稳，自托管的价值直接归零。</li>
+</ul>
+<p class='my-2'>反过来，满足下面三条再动手：你长期有数据（照片、文档、视频）；你能接受自己当运维；家里带宽和电力稳定。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>八类值得跑的服务</h2>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>文件同步</strong>：Syncthing。P2P 结构、无需中心服务器、免费开源，手机电脑间同步照片文档够用；要网页端完整网盘体验就叠 Nextcloud，但 Nextcloud 比较吃资源，8G 内存跑要留够空间。</li>
+<li><strong>媒体库</strong>：Jellyfin。免费无广告、支持转码、多端播放，家庭片库归宿；Emby/Plex 体验略好但要付费，先 Jellyfin 跑顺再说。</li>
+<li><strong>监控告警</strong>：Prometheus + node_exporter + Grafana 三件套，资源用量、服务存活都能盯；只想看「谁挂了」就用轻量得多的 Uptime Kuma，一条链接加个告警机器人。</li>
+<li><strong>备份</strong>：Restic。增量 + 去重 + 加密，配 cron 定时跑，配合「3-2-1 原则」——三份数据、两种介质、一份放异地（网盘或对象存储）。备份不落地就是空谈，具体方法见 <a href=\"https://821066.xyz/blog/posts/personal-data-backup-sync.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>个人数据备份与同步</a>。</li>
+<li><strong>元搜索</strong>：SearXNG。隐私友好的聚合搜索，把主流引擎的结果聚合给你，不收集你的搜索历史，当日常入口很顺手。</li>
+<li><strong>本地 AI</strong>：Ollama。跑小型开源模型，敏感文档不想喂给在线 API 的场景就靠它；显存不够就 4B 以下的小模型，或者干脆用 CPU 版慢跑。</li>
+<li><strong>静态站点</strong>：Caddy 直接托管个人页，自动 HTTPS 省一堆事；但如果只是个人主页/博客，直接用 <a href=\"https://821066.xyz/blog/posts/static-site-hosting-comparison.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>静态站点托管对比</a> 里挑一家托管服务更省心，机器留给上面那些。</li>
+<li><strong>自定义域名邮箱</strong>：Maddy 这类轻量邮件服务器适合只想收「我发给自己的备份件」的场景；正经收业务邮件，按 <a href=\"https://821066.xyz/blog/posts/custom-domain-email-setup.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>自定义域名邮箱配置指南</a> 走托管方案，别在家机硬扛。</li>
+</ul>
+<h2 class='mt-8 mb-3 text-xl font-bold'>一台 4 核 8G 的参考配置</h2>
+<p class='my-2'>按「日常刚需」档位给个清单，全部容器化跑（Docker Compose 一锅端），不装虚拟机：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>基础</strong>：Docker + Compose，一个 `docker-compose.yml` 管所有服务，方便整体升级；</li>
+<li><strong>Syncthing</strong>：~100MB 内存，2C 同步任务常驻；</li>
+<li><strong>Jellyfin</strong>：~500MB 内存，转码时吃 CPU，8G 机器上最多开 2~3 路；</li>
+<li><strong>Uptime Kuma</strong>：~100MB，替代完整的 Prometheus 栈，省资源；真要上 Grafana 把 Kuma 撤了；</li>
+<li><strong>Restic</strong>：不常驻，cron 每天凌晨跑一次，跑完即走，不占内存；</li>
+<li><strong>SearXNG</strong>：~200MB，按需开；</li>
+<li><strong>Ollama（可选）</strong>：CPU 版 4B 模型推理 8G 内存够，推理慢（每分钟几十字），只适合非交互场景；</li>
+<li><strong>磁盘</strong>：系统盘 200G 起，媒体库另接 2T+ 机械盘，备份目标必须异地，不能只存家里。</li>
+</ul>
+<p class='my-2'>资源冲突时的取舍顺序：备份 &gt; 文件同步 &gt; 媒体 &gt; 监控 &gt; 其他，越靠前的越不能牺牲。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>三个容易翻车的地方</h2>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>容器版本老化</strong>：镜像半年不拉新的，一出事就是 CVE 列表，定个每月例行 `docker compose pull &amp;&amp; up -d`；</li>
+<li><strong>端口暴露</strong>：能只监听内网的绝不挂公网，NAT 映射出去的服务配好强口令 + 失败锁定，账号安全习惯见 <a href=\"https://821066.xyz/blog/posts/account-security-checklist.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>账号安全清单</a>；</li>
+<li><strong>备份没验证过</strong>：备份脚本跑了三个月从没试过恢复，等于没备份。季度抽一个文件做一次真实恢复演练，域名和 DNS 相关操作前先看 <a href=\"https://821066.xyz/blog/posts/domain-net-guide.html\" target=\"_blank\" rel=\"noopener\" class='text-blue-600 dark:text-blue-400 hover:underline'>域名入门与避坑</a>。</li>
+</ul>
+<h2 class='mt-8 mb-3 text-xl font-bold'>起步三步</h2>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>第 1 周</strong>：装好 Docker，先把 Syncthing 和 Restic 跑起来（数据保护优先，娱乐排后面）；</li>
+<li><strong>第 2 周</strong>：加 Jellyfin 和 Uptime Kuma，配好告警机器人；</li>
+<li><strong>第 3 周</strong>：按需加 SearXNG/Ollama，写下你的 `docker-compose.yml` 维护笔记（升级顺序、回滚方法）。</li>
+</ul>
+<p class='my-2'>自托管的本质是「把运维责任搬回家换数据主权」，值不值，看你家里那台机器能不能真的 7×24 活着。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>每类服务怎么验证「真的在跑」</h2>
+<p class='my-2'>服务装完不等于能用，每个服务留一条 30 秒可复跑的验证动作：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>Syncthing</strong>：两台设备各放一个测试文件，10 分钟内双向同步成功才算通；</li>
+<li><strong>Jellyfin</strong>：手机 App 连内网拉一条 1080P 播放，能转码不卡就达标；</li>
+<li><strong>Uptime Kuma</strong>：故意停掉一个容器，看告警机器人是否 1 分钟内收到；</li>
+<li><strong>Restic</strong>：恢复演练——从仓库里拉回一个删掉的文件，内容 md5 一致才算备份成功；</li>
+<li><strong>SearXNG</strong>：搜一个近期事件，结果页能打开主流站点才说明没被墙/被拦；</li>
+<li><strong>Ollama</strong>：跑一条 100 字的推理请求，5 分钟内出结果就符合 CPU 预期。</li>
+</ul>
+<p class='my-2'>这条动作写进你的维护笔记，季度巡检时逐条过，比「服务状态全绿」靠谱得多——监控面板绿不代表业务真通。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>硬件层面的三个坑</h2>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>机械盘休眠</strong>：NAS 模式跑 Syncthing/Jellyfin，系统设了硬盘自动休眠就等着半夜同步卡死，BIOS 里关掉硬盘休眠，小主机加个 UPS 防断电；</li>
+<li><strong>散热和噪音</strong>：放在书房的小主机夏天积灰后风扇全速，预留每月一次吹灰的固定日程；</li>
+<li><strong>IP 变化</strong>：家宽 IP 变了的频率比你想象的高，所有内网服务别写死 IP，用域名或 DNS 解析，动态 DNS 没配好前，内网穿透方案先留一条活路。</li>
+</ul>
+<h2 class='mt-8 mb-3 text-xl font-bold'>维护节奏（贴墙上的版本）</h2>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>每周</strong>：`docker compose pull &amp;&amp; up -d` 拉一次新镜像（先读 changelog，别盲升）；看一次 Uptime Kuma 历史，有无静默宕机；</li>
+<li><strong>每月</strong>：备份任务日志翻一遍（Restic 失败不会自己喊）；硬盘健康（SMART）查一次；</li>
+<li><strong>每季</strong>：一次完整恢复演练；容器全量镜像更新；把新增服务补进 compose 和维护笔记。</li>
+</ul>
+<p class='my-2'>自托管最大的敌人不是技术，是三个月后忘了它在那儿。节奏定好，服务才不会变成电子垃圾。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>算一笔电费账：自托管划不划算</h2>
+<p class='my-2'>自托管最容易被忽略的成本是电费。粗算法：整套服务待机功耗（主机 + 硬盘常开）约 60~100W，按 0.8 元/度算，7×24 跑一个月约 35~60 元。一年 400~700 元。</p>
+<p class='my-2'>这笔账怎么算：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li>它替代了什么？云盘订阅、NAS 硬件折旧、托管站点的月费——如果这些你本来就花钱，自托管是净省；</li>
+<li>如果这些你本来不花钱（全用免费档），自托管是为「数据主权和隐私」付费，电费就是门票价。</li>
+</ul>
+<p class='my-2'>两种算法都不亏的话再上，纯「图个新鲜」就别买了——新鲜劲三个月就过，电费是按年付的。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>常见故障场景：别等宕机才查</h2>
+<p class='my-2'>四个高频故障，响应预案提前写好贴在维护笔记里：</p>
+<ul class='list-disc pl-5 space-y-1.5 my-2'>
+<li><strong>家里断网</strong>：所有内网服务失联，Syncthing 断点续传（恢复后自动补）；有异地备份的话，数据侧没有风险；先查光猫和软路由，再查自己的；</li>
+<li><strong>磁盘满</strong>：Jellyfin 下载没设上限是首犯，看哪个目录暴涨，清缓存或加 `tmp` 清理 cron；</li>
+<li><strong>镜像拉不动</strong>：网络问题或 tag 失效，换个镜像源重试；拉镜像失败不等于服务挂，旧容器还在跑，别急着重建；</li>
+<li><strong>升级后服务起不来</strong>：`docker compose logs` 看最后 50 行，90% 是配置项改名了，按新镜像的文档改回，改不回就回滚上一版 tag。</li>
+</ul>
+<p class='my-2'>预案写在纸上/笔记里，故障当晚才不会对着黑框发呆。</p>
+<h2 class='mt-8 mb-3 text-xl font-bold'>最后一句</h2>
+<p class='my-2'>自托管不是「把云搬回家」，是把「数据主权 + 可预期成本 + 可控性」搬回家，代价是你自己的时间。时间比电费贵，所以每一步都先问一句：这事托管服务商做不过来的部分，是不是正是我想要的？是，就上；只是省事，就别折腾。</p>
+<p class='my-2'>*本文 2026-11-12 更新 · 配置按 4C8G 小主机给出，更大规格按服务实际负载扩容*</p></div>
+    <footer class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+      <div class="flex flex-wrap gap-x-4 gap-y-1">
+        <a href="/" class="hover:text-blue-600">首页</a>
+        <a href="/about.html" class="hover:text-blue-600">关于</a>
+        <a href="/privacy.html" class="hover:text-blue-600">隐私政策</a>
+        <a href="/contact.html" class="hover:text-blue-600">联系我们</a>
+        <a href="/disclaimer.html" class="hover:text-blue-600">免责声明</a>
+        <a href="/site-guide.html" class="hover:text-blue-600">策展指南</a>
+        <a href="/blog/" class="hover:text-blue-600">博客</a>
+      </div>
+      <p class="mt-3">© 2026 醉生梦死导航 · 博客内容由 Hermes 自动汇总生成，摘要信息以原文链接为准</p>
+    </footer>
+  </div>
+</body>
+</html>
